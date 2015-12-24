@@ -47,6 +47,9 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
                 BlogService.prototype.getUploadURL = function () {
                     return this.baseURL + 'admin/uploadImage';
                 };
+                BlogService.prototype.getImageURL = function (postID, fileName) {
+                    return this.baseURL + 'image/' + postID + '/' + fileName;
+                };
                 BlogService.prototype.postEntry = function (entry) {
                     var headers = new http_1.Headers();
                     console.log("pre save: " + JSON.stringify(entry));

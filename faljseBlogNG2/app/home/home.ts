@@ -5,20 +5,9 @@ import {BlogService} from "../blog.service";
 
 
 @Component({
-    selector: 'home'
-})
-
-@View({
-    template: `<div class="home jumbotron center-block">
-    <h1>faljseBlog</h1>
-    <ul>
-      <div *ngFor="#entry of entries">
-      <div [innerHTML]=mDown(entry.text)>
-</div>
-      </div>
-    </ul>
-
-</div>`,
+    selector: 'home',
+    styleUrls: ['app/home/home.css'],
+    templateUrl: "app/home/home.html",
     directives: [RouterLink]
 })
 

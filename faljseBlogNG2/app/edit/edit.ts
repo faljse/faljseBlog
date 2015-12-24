@@ -8,6 +8,7 @@ import {BlogService} from "../blog.service";
 @Component({
     selector: 'login',
     directives: [RouterLink],
+    styleUrls: ['app/home/home.css'],
     styles: [`textarea#editorArea {
         width: 620px;
         height: 320px;
@@ -38,7 +39,12 @@ import {BlogService} from "../blog.service";
         height: 440px;
         width: 420px;
     }`],
-    template: `<div class="login jumbotron center-block">
+    template: `
+    <header class="intro-header">
+
+</header>
+
+    <div class="login jumbotron center-block">
     <div class="row">
     <div class="col-xs-2">
     <ul class="heroes">
@@ -48,14 +54,21 @@ import {BlogService} from "../blog.service";
        </ul>
     </div>
     <div class="col-xs-10">
-    <textarea id="editorArea" [(ngModel)]="entry.text"></textarea>
-    <button (click)="onSave(input, $event)"
-    [disabled]="text === 'Save'">Save</button>
-     <ul>
-      <li *ngFor="#fileName of imageFilenames">
-        {{ fileName }}
-      </li>
-    </ul>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="exampleInputName2">Title</label>
+                    <input type="text" class="form-control" id="title" [(ngModel)]="entry.title">
+                    <input type="checkbox" class="checkbox" id="published" value="published" [(ngModel)]="entry.published">published<br/>
+              </div>
+              </form>
+        <textarea id="editorArea" [(ngModel)]="entry.text"></textarea>
+        <button (click)="onSave(input, $event)"
+        [disabled]="text === 'Save'">Save</button>
+         <ul>
+          <li *ngFor="#fileName of imageFilenames" (click)="onSelectImage(fileName)">
+            {{ fileName }}
+          </li>
+        </ul>
 
     <div class="table table-striped" class="files" id="previews">
       <div id="template" class="file-row">
@@ -107,7 +120,7 @@ export class Edit {
             this.loadDropzone(this.entry.id);});
         this.blogService.getEntries().subscribe(res => this.entries = res);
         this.loadFileNames(id);
-
+        this.textarea=document.getElementById('editorArea');
 
 
     }
@@ -118,6 +131,27 @@ export class Edit {
                 this.entry =res;
                 this._router.navigate( ['Edit', { id: this.entry.id }] );
             });
+    }
+
+    onSelectImage(fileName)
+    {
+        console.log(fileName);
+        var text:String='![alt]('+this.blogService.getImageURL(this.entry.id,fileName)+ ' "txt")';
+        this.insertAtCaret(this.textarea, text);
+    }
+
+    insertAtCaret(txtarea, text) {
+        var scrollPos = txtarea.scrollTop;
+        var caretPos = txtarea.selectionStart;
+
+        var front = (txtarea.value).substring(0, caretPos);
+        var back = (txtarea.value).substring(txtarea.selectionEnd, txtarea.value.length);
+        txtarea.value = front + text + back;
+        caretPos = caretPos + text.length;
+        txtarea.selectionStart = caretPos;
+        txtarea.selectionEnd = caretPos;
+        txtarea.focus();
+        txtarea.scrollTop = scrollPos;
     }
 
     onSelect(entry)

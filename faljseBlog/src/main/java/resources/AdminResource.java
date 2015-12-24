@@ -2,6 +2,7 @@ package resources;
 
 import faljseBlog.FaljseBlogApplication;
 import faljseBlog.GSConfiguration;
+import faljseBlog.Tools;
 import objects.Blog;
 import objects.BlogEntry;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -70,8 +71,8 @@ public class AdminResource {
         if(e==null)
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 
-        java.nio.file.Path imagesDir=getImageDir(config.getFaljseBlogDir(),e.getId());
-        java.nio.file.Path imagesFile=imagesDir.resolve(sanitizeFileName(fileDetail.getFileName()));
+        java.nio.file.Path imagesDir=Tools.getImageDir(config.getFaljseBlogDir(),e.getId());
+        java.nio.file.Path imagesFile=imagesDir.resolve(Tools.sanitizeFileName(fileDetail.getFileName()));
         try {
             if(Files.notExists(imagesDir))
                 Files.createDirectory(imagesDir);
@@ -83,39 +84,18 @@ public class AdminResource {
         }
     }
 
-    private static java.nio.file.Path getImageDir(String blogDir, int id)
-    {
-        java.nio.file.Path path = Paths.get(blogDir,
-                String.valueOf(id),
-                "images");
-        try {
-            if(Files.notExists(path))
-            Files.createDirectory(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return path;
-    }
+
 
     @GET
     @Path("/listImages/{id}")
     @Produces("application/json")
     public Response listImages(@PathParam("id") int id) {
-        java.nio.file.Path imagesDir=getImageDir(config.getFaljseBlogDir(),id);
+        java.nio.file.Path imagesDir=Tools.getImageDir(config.getFaljseBlogDir(),id);
         String[] fileNames=imagesDir.toFile().list();
         return Response.ok().status(200).entity(fileNames).build();
     }
 
-    private static String sanitizeFileName(String name)
-    {
-        StringBuilder filename = new StringBuilder();
-        for (char c : name.toCharArray()) {
-            if (c=='.' || Character.isJavaIdentifierPart(c)) {
-                filename.append(c);
-            }
-        }
-        return filename.toString();
-    }
+
 
     // save uploaded file to new location
     private void writeToFile(InputStream uploadedInputStream,

@@ -43,10 +43,9 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                 };
                 Home = __decorate([
                     core_1.Component({
-                        selector: 'home'
-                    }),
-                    core_1.View({
-                        template: "<div class=\"home jumbotron center-block\">\n    <h1>faljseBlog</h1>\n    <ul>\n      <div *ngFor=\"#entry of entries\">\n      <div [innerHTML]=mDown(entry.text)>\n</div>\n      </div>\n    </ul>\n\n</div>",
+                        selector: 'home',
+                        styleUrls: ['app/home/home.css'],
+                        templateUrl: "app/home/home.html",
                         directives: [router_1.RouterLink]
                     }), 
                     __metadata('design:paramtypes', [router_1.Router, router_1.RouteParams, blog_service_1.BlogService])

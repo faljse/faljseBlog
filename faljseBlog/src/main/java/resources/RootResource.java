@@ -2,12 +2,14 @@ package resources;
 
 import faljseBlog.FaljseBlogApplication;
 import faljseBlog.GSConfiguration;
+import faljseBlog.Tools;
 import objects.BlogEntry;
 
 import javax.servlet.annotation.MultipartConfig;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,23 @@ public class RootResource {
     @Path("/admin")
     public AdminResource getAdminResource() {
         return new AdminResource(configuration);
+    }
+
+    @GET
+    @Path("/image/{id}/{fileName}")
+    @Produces("image/png")
+    public InputStream getFileInputStream(@PathParam("id") int postID,
+                                          @PathParam("fileName") String fileName){
+
+        String fName= Tools.sanitizeFileName(fileName);
+        java.nio.file.Path imageDir = Tools.getImageDir(configuration.getFaljseBlogDir(), postID);
+        try {
+            InputStream is = Files.newInputStream(imageDir.resolve(fName));
+            return is;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

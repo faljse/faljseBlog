@@ -45,6 +45,11 @@ export class BlogService {
     {
         return this.baseURL+'admin/uploadImage';
     }
+    getImageURL(postID:number, fileName: String)
+    {
+        return this.baseURL+'image/'+postID+'/'+fileName;
+    }
+
     postEntry(entry:BlogEntry)
     {
             var headers = new Headers();

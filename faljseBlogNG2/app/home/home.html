@@ -1,15 +1,87 @@
-<div class="home jumbotron center-block">
-    <h1>Home</h1>
-    <form role="form" (submit)="login($event, username.value, password.value)">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" #username class="form-control" id="username" placeholder="Username">
+<!-- Page Header -->
+<!-- Set your background image for this header on the line below. -->
+<!--<header class="intro-header" style="background-image: url('img/home-bg.jpg')">-->
+    <!--<div class="container">-->
+        <!--<div class="row">-->
+            <!--<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">-->
+                <!--<div class="site-heading">-->
+                    <!--<h1>Clean Blog</h1>-->
+                    <!--<hr class="small">-->
+                    <!--<span class="subheading">A Clean Blog Theme by Start Bootstrap</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</header>-->
+<header class="intro-header">
+
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div *ngFor="#entry of entries">
+            <div class="post-preview">
+                <a href="#">
+                    <h2 class="post-title">
+                        {{ entry.title }}
+                    </h2>
+                    <h3 class="post-subtitle">
+                    </h3>
+
+                        <div [innerHTML]=mDown(entry.text)>
+                        </div>
+                </a>
+                <p class="post-meta">Posted by <a href="#">me</a> on December 24, 2015</p>
+            </div>
+            </div>
+            <hr>
+            <!-- Pager -->
+            <ul class="pager">
+                <li class="next">
+                    <a href="#">Older Posts &rarr;</a>
+                </li>
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" #password class="form-control" id="password" placeholder="Password">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-        <a href="/signup">Click here to Signup</a>
-    </form>
+    </div>
 </div>
+
+<hr>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; Your Website 2014</p>
+            </div>
+        </div>
+    </div>
+</footer>
