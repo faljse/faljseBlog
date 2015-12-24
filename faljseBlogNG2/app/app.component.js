@@ -35,7 +35,7 @@ System.register(['angular2/core', 'angular2/router', './login/login', './home/ho
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-app',
-                        template: "  <h1>Component Router</h1>\n      <a [routerLink]=\"['Home']\">Home</a>\n      <a [routerLink]=\"['Login']\">Login</a>\n      <a [routerLink]=\"['Edit', {id:-1}]\">Edit</a>\n      <router-outlet></router-outlet>",
+                        template: "\n      <a [routerLink]=\"['Home']\">Home</a>\n      <a [routerLink]=\"['Login']\">Login</a>\n      <a [routerLink]=\"['Edit', {id:-1}]\">Edit</a>\n      <router-outlet></router-outlet>",
                         directives: [router_1.ROUTER_DIRECTIVES]
                     }),
                     router_1.RouteConfig([

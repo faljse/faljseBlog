@@ -1,6 +1,7 @@
 import {Component, View} from 'angular2/core';
-import { Router, RouterLink } from 'angular2/router';
-
+import {Router, RouterLink, RouteParams} from 'angular2/router';
+import {BlogEntry} from '../blog.service';
+import {BlogService} from "../blog.service";
 
 
 @Component({
@@ -9,39 +10,36 @@ import { Router, RouterLink } from 'angular2/router';
 
 @View({
     template: `<div class="home jumbotron center-block">
-    <h1>Home</h1>
-    blog entries;
+    <h1>faljseBlog</h1>
+    <ul>
+      <div *ngFor="#entry of entries">
+      <div [innerHTML]=mDown(entry.text)>
+</div>
+      </div>
+    </ul>
 
 </div>`,
     directives: [RouterLink]
 })
 
 export class Home {
-    constructor(public router: Router) {
+    private blogService:BlogService;
+    private  entries: Array<BlogEntry>;
+
+    constructor(private _router: Router, private _routeParams:RouteParams, _blogService: BlogService) {
+        this.blogService=_blogService;
     }
 
-    login(event, username, password) {
-        event.preventDefault();
-        //window.fetch('http://localhost:3001/sessions/create', {
-        //        method: 'POST',
-        //        headers: {
-        //            'Accept': 'application/json',
-        //            'Content-Type': 'application/json'
-        //        },
-        //        body: JSON.stringify({
-        //            username, password
-        //        })
-        //    })
-        //    .then(status)
-        //    .then(json)
-        //    .then((response:any) => {
-        //        localStorage.setItem('jwt', response.id_token);
-        //        this.router.parent.navigateByUrl('/home');
-        //    })
-        //    .catch((error) => {
-        //        alert(error.message);
-        //        console.log(error.message);
-        //    });
+    private mDown(html:string)
+    {
+        if(html!=null)
+            return markdown.toHTML(html);
+        //return html;
+    }
+
+
+    ngOnInit() {
+        this.blogService.getPublicEntries().subscribe(res => {this.entries = res;});
     }
 
     signup(event) {

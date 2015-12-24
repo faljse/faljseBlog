@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router'], function(exports_1) {
+System.register(['angular2/core', 'angular2/router', "../blog.service"], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,7 +8,7 @@ System.register(['angular2/core', 'angular2/router'], function(exports_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1;
+    var core_1, router_1, blog_service_1;
     var Home;
     return {
         setters:[
@@ -17,34 +17,25 @@ System.register(['angular2/core', 'angular2/router'], function(exports_1) {
             },
             function (router_1_1) {
                 router_1 = router_1_1;
+            },
+            function (blog_service_1_1) {
+                blog_service_1 = blog_service_1_1;
             }],
         execute: function() {
             Home = (function () {
-                function Home(router) {
-                    this.router = router;
+                function Home(_router, _routeParams, _blogService) {
+                    this._router = _router;
+                    this._routeParams = _routeParams;
+                    this.blogService = _blogService;
                 }
-                Home.prototype.login = function (event, username, password) {
-                    event.preventDefault();
-                    //window.fetch('http://localhost:3001/sessions/create', {
-                    //        method: 'POST',
-                    //        headers: {
-                    //            'Accept': 'application/json',
-                    //            'Content-Type': 'application/json'
-                    //        },
-                    //        body: JSON.stringify({
-                    //            username, password
-                    //        })
-                    //    })
-                    //    .then(status)
-                    //    .then(json)
-                    //    .then((response:any) => {
-                    //        localStorage.setItem('jwt', response.id_token);
-                    //        this.router.parent.navigateByUrl('/home');
-                    //    })
-                    //    .catch((error) => {
-                    //        alert(error.message);
-                    //        console.log(error.message);
-                    //    });
+                Home.prototype.mDown = function (html) {
+                    if (html != null)
+                        return markdown.toHTML(html);
+                    //return html;
+                };
+                Home.prototype.ngOnInit = function () {
+                    var _this = this;
+                    this.blogService.getPublicEntries().subscribe(function (res) { _this.entries = res; });
                 };
                 Home.prototype.signup = function (event) {
                     event.preventDefault();
@@ -55,10 +46,10 @@ System.register(['angular2/core', 'angular2/router'], function(exports_1) {
                         selector: 'home'
                     }),
                     core_1.View({
-                        template: "<div class=\"home jumbotron center-block\">\n    <h1>Home</h1>\n    blog entries;\n\n</div>",
+                        template: "<div class=\"home jumbotron center-block\">\n    <h1>faljseBlog</h1>\n    <ul>\n      <div *ngFor=\"#entry of entries\">\n      <div [innerHTML]=mDown(entry.text)>\n</div>\n      </div>\n    </ul>\n\n</div>",
                         directives: [router_1.RouterLink]
                     }), 
-                    __metadata('design:paramtypes', [router_1.Router])
+                    __metadata('design:paramtypes', [router_1.Router, router_1.RouteParams, blog_service_1.BlogService])
                 ], Home);
                 return Home;
             })();

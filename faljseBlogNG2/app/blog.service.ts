@@ -4,6 +4,7 @@ import {Component, View} from 'angular2/core';
 import { Http,HTTP_PROVIDERS, Response, Headers} from 'angular2/http';
 import 'rxjs/add/operator/map'
 
+
 export class BlogEntry {
     id: number;
     title: string;
@@ -11,6 +12,11 @@ export class BlogEntry {
     files: Array<string>;
     created: number;
     modified: number;
+
+    getHTML()
+    {
+        return markdown.toHTML(text);
+    }
 }
 
 export interface Blog {
@@ -70,6 +76,13 @@ export class BlogService {
         console.log('getEntries()');
             return this.http.get('http://localhost:8080/api/admin/list.json')
                 .map(res => res.json());
+    }
+
+    getPublicEntries()
+    {
+        console.log('getPublicEntries()');
+        return this.http.get('http://localhost:8080/api/entries.json')
+            .map(res => res.json());
     }
 
     getImages(postID:number) {

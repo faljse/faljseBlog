@@ -1,10 +1,14 @@
 package resources;
 
+import faljseBlog.FaljseBlogApplication;
 import faljseBlog.GSConfiguration;
+import objects.BlogEntry;
 
 import javax.servlet.annotation.MultipartConfig;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -34,6 +38,15 @@ public class RootResource {
     @Path("/admin")
     public AdminResource getAdminResource() {
         return new AdminResource(configuration);
+    }
+
+
+    @GET
+    @Path("/entries.json")
+    @Produces("application/json")
+    public Response list() {
+        List<BlogEntry> entries= FaljseBlogApplication.getStorage().getEntries();
+        return Response.ok().status(200).entity(entries).build();
     }
 
 //    @GET

@@ -33,15 +33,35 @@ System.register(['angular2/core', 'angular2/router', '../blog.service', "../blog
                 }
                 Edit.prototype.loadFileNames = function (postID) {
                     var _this = this;
+                    if (postID < 0)
+                        return;
                     this.blogService.getImages(postID).subscribe(function (res) { return _this.imageFilenames = res; });
                 };
                 Edit.prototype.ngOnInit = function () {
                     var _this = this;
                     this.entry = new blog_service_1.BlogEntry;
                     var id = +this._routeParams.get('id');
-                    this.blogService.getEntry(id).subscribe(function (res) { return _this.entry = res; });
+                    this.blogService.getEntry(id).subscribe(function (res) {
+                        _this.entry = res;
+                        _this.loadDropzone(_this.entry.id);
+                    });
                     this.blogService.getEntries().subscribe(function (res) { return _this.entries = res; });
                     this.loadFileNames(id);
+                };
+                Edit.prototype.onSave = function (event) {
+                    var _this = this;
+                    this.blogService.postEntry(this.entry)
+                        .subscribe(function (res) {
+                        _this.entry = res;
+                        _this._router.navigate(['Edit', { id: _this.entry.id }]);
+                    });
+                };
+                Edit.prototype.onSelect = function (entry) {
+                    this._router.navigate(['Edit', { id: entry.id }]);
+                };
+                Edit.prototype.loadDropzone = function (postID) {
+                    if (postID < 1)
+                        return;
                     var previewNode = document.querySelector("#template");
                     previewNode.id = "";
                     var previewTemplate = previewNode.parentNode.innerHTML;
@@ -58,20 +78,12 @@ System.register(['angular2/core', 'angular2/router', '../blog.service', "../blog
                     });
                     dz.on('sending', function (file, xhr, formData) {
                         formData.append('JWT', 'bob');
-                        formData.append('entryID', id);
+                        formData.append('entryID', postID);
                     });
                     dz.on('complete', function (file) {
                         dz.removeFile(file);
-                        this.loadFileNames(id);
+                        this.loadFileNames(postID);
                     }.bind(this));
-                };
-                Edit.prototype.onSave = function (event) {
-                    var _this = this;
-                    this.blogService.postEntry(this.entry)
-                        .subscribe(function (res) { return _this.entry = res; });
-                };
-                Edit.prototype.onSelect = function (entry) {
-                    this._router.navigate(['Edit', { id: entry.id }]);
                 };
                 Edit.prototype.login = function (event, username, password) {
                     event.preventDefault();
@@ -105,10 +117,10 @@ System.register(['angular2/core', 'angular2/router', '../blog.service', "../blog
                     core_1.Component({
                         selector: 'login',
                         directives: [router_1.RouterLink],
-                        styles: ["textarea#blogEntryText {\n        width: 620px;\n        height: 320px;\n        border: 3px solid #cccccc;\n        padding: 5px;\n        font-family: Tahoma, sans-serif;\n        background-image: url(bg.gif);\n        background-position: bottom right;\n        background-repeat: no-repeat;\n        }",
+                        styles: ["textarea#editorArea {\n        width: 620px;\n        height: 320px;\n        border: 3px solid #cccccc;\n        padding: 5px;\n        font-family: Fixed, monospace;\n     //   background-image: url(bg.gif);\n        background-position: bottom right;\n        background-repeat: no-repeat;\n        }",
                             ".heroes {list-style-type: none; margin-left: 1em; padding: 0; width: 10em;}\n        .heroes li { cursor: pointer; position: relative; left: 0; transition: all 0.2s ease; }\n        .heroes li:hover {color: #369; background-color: #EEE; left: .2em;}\n        .heroes .badge {\n        font-size: small;\n        color: white;\n        padding: 0.1em 0.7em;\n        background-color: #369;\n        line-height: 1em;\n        position: relative;\n        left: -1px;\n        top: -1px;\n          }\n     .selected { background-color: #EEE; color: #369; }\n    ",
                             "   #editorArea {\n        position: relative;\n        height: 440px;\n        width: 420px;\n    }"],
-                        template: "<div class=\"login jumbotron center-block\">\n    <h1>Ediat</h1>\n    <div class=\"row\">\n    <div class=\"col-xs-2\">\n    <ul class=\"heroes\">\n    <li *ngFor=\"#entry of entries\" (click)=\"onSelect(entry)\">\n        <span class=\"badge\">{{entry.id}}</span> {{entry.title}}\n       </li>\n       </ul>\n    </div>\n    <div class=\"col-xs-10\">\n        <container>\n            <textarea id=\"editorArea\" [(ngModel)]=\"entry.text\"></textarea>\n        </container>\n            <button (click)=\"onSave(input, $event)\"\n            [disabled]=\"text === 'Save'\">Save</button>\n\n     <ul>\n      <li *ngFor=\"#fileName of imageFilenames\">\n        {{ fileName }}\n      </li>\n    </ul>\n\n<div class=\"table table-striped\" class=\"files\" id=\"previews\">\n\n  <div id=\"template\" class=\"file-row\">\n    <!-- This is used as the file preview template -->\n    <div>\n        <span class=\"preview\"><img data-dz-thumbnail /></span>\n    </div>\n    <div>\n        <p class=\"name\" data-dz-name></p>\n        <strong class=\"error text-danger\" data-dz-errormessage></strong>\n    </div>\n    <div>\n        <p class=\"size\" data-dz-size></p>\n        <div class=\"progress progress-striped active\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\">\n          <div class=\"progress-bar progress-bar-success\" style=\"width:0%;\" data-dz-uploadprogress></div>\n        </div>\n    </div>\n  </div>\n\n</div>\n    <div id=\"upload\" style=\"width: 200px;height:50px;border:dashed;\">upload Files</div>\n</div>\n\n</div>",
+                        template: "<div class=\"login jumbotron center-block\">\n    <div class=\"row\">\n    <div class=\"col-xs-2\">\n    <ul class=\"heroes\">\n    <li *ngFor=\"#entry of entries\" (click)=\"onSelect(entry)\">\n        <span class=\"badge\">{{entry.id}}</span> {{entry.title}}\n       </li>\n       </ul>\n    </div>\n    <div class=\"col-xs-10\">\n    <textarea id=\"editorArea\" [(ngModel)]=\"entry.text\"></textarea>\n    <button (click)=\"onSave(input, $event)\"\n    [disabled]=\"text === 'Save'\">Save</button>\n     <ul>\n      <li *ngFor=\"#fileName of imageFilenames\">\n        {{ fileName }}\n      </li>\n    </ul>\n\n    <div class=\"table table-striped\" class=\"files\" id=\"previews\">\n      <div id=\"template\" class=\"file-row\">\n        <!-- This is used as the file preview template -->\n        <div>\n            <span class=\"preview\"><img data-dz-thumbnail /></span>\n        </div>\n        <div>\n            <p class=\"name\" data-dz-name></p>\n            <strong class=\"error text-danger\" data-dz-errormessage></strong>\n        </div>\n        <div>\n            <p class=\"size\" data-dz-size></p>\n            <div class=\"progress progress-striped active\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\">\n              <div class=\"progress-bar progress-bar-success\" style=\"width:0%;\" data-dz-uploadprogress></div>\n            </div>\n        </div>\n      </div>\n    </div>\n    <div id=\"upload\" style=\"width: 300px;height:70px;border:dashed;\">upload Files</div>\n\n</div>\n\n</div>",
                     }), 
                     __metadata('design:paramtypes', [router_1.Router, router_1.RouteParams, blog_service_2.BlogService])
                 ], Edit);

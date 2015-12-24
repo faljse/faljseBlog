@@ -9,7 +9,7 @@ import {Edit} from './edit/edit';
 
 @Component({
     selector: 'my-app',
-    template: `  <h1>Component Router</h1>
+    template: `
       <a [routerLink]="['Home']">Home</a>
       <a [routerLink]="['Login']">Login</a>
       <a [routerLink]="['Edit', {id:-1}]">Edit</a>

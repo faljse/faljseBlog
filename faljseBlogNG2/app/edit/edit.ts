@@ -8,13 +8,13 @@ import {BlogService} from "../blog.service";
 @Component({
     selector: 'login',
     directives: [RouterLink],
-    styles: [`textarea#blogEntryText {
+    styles: [`textarea#editorArea {
         width: 620px;
         height: 320px;
         border: 3px solid #cccccc;
         padding: 5px;
-        font-family: Tahoma, sans-serif;
-        background-image: url(bg.gif);
+        font-family: Fixed, monospace;
+     //   background-image: url(bg.gif);
         background-position: bottom right;
         background-repeat: no-repeat;
         }`,
@@ -39,7 +39,6 @@ import {BlogService} from "../blog.service";
         width: 420px;
     }`],
     template: `<div class="login jumbotron center-block">
-    <h1>Ediat</h1>
     <div class="row">
     <div class="col-xs-2">
     <ul class="heroes">
@@ -49,39 +48,35 @@ import {BlogService} from "../blog.service";
        </ul>
     </div>
     <div class="col-xs-10">
-        <container>
-            <textarea id="editorArea" [(ngModel)]="entry.text"></textarea>
-        </container>
-            <button (click)="onSave(input, $event)"
-            [disabled]="text === 'Save'">Save</button>
-
+    <textarea id="editorArea" [(ngModel)]="entry.text"></textarea>
+    <button (click)="onSave(input, $event)"
+    [disabled]="text === 'Save'">Save</button>
      <ul>
       <li *ngFor="#fileName of imageFilenames">
         {{ fileName }}
       </li>
     </ul>
 
-<div class="table table-striped" class="files" id="previews">
-
-  <div id="template" class="file-row">
-    <!-- This is used as the file preview template -->
-    <div>
-        <span class="preview"><img data-dz-thumbnail /></span>
-    </div>
-    <div>
-        <p class="name" data-dz-name></p>
-        <strong class="error text-danger" data-dz-errormessage></strong>
-    </div>
-    <div>
-        <p class="size" data-dz-size></p>
-        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+    <div class="table table-striped" class="files" id="previews">
+      <div id="template" class="file-row">
+        <!-- This is used as the file preview template -->
+        <div>
+            <span class="preview"><img data-dz-thumbnail /></span>
         </div>
+        <div>
+            <p class="name" data-dz-name></p>
+            <strong class="error text-danger" data-dz-errormessage></strong>
+        </div>
+        <div>
+            <p class="size" data-dz-size></p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+            </div>
+        </div>
+      </div>
     </div>
-  </div>
+    <div id="upload" style="width: 300px;height:70px;border:dashed;">upload Files</div>
 
-</div>
-    <div id="upload" style="width: 200px;height:50px;border:dashed;">upload Files</div>
 </div>
 
 </div>`,
@@ -98,17 +93,42 @@ export class Edit {
         this.blogService=_blogService;
     }
 
-    loadFileNames(postID:integer)
+    loadFileNames(postID:number)
     {
+        if(postID<0)
+            return;
         this.blogService.getImages(postID).subscribe(res => this.imageFilenames = res);
     }
 
     ngOnInit() {
         this.entry=new BlogEntry;
         let id = +this._routeParams.get('id');
-        this.blogService.getEntry(id).subscribe(res => this.entry = res);
+        this.blogService.getEntry(id).subscribe(res => {this.entry = res;
+            this.loadDropzone(this.entry.id);});
         this.blogService.getEntries().subscribe(res => this.entries = res);
         this.loadFileNames(id);
+
+
+
+    }
+    onSave(event)
+    {
+        this.blogService.postEntry(this.entry)
+            .subscribe(res => {
+                this.entry =res;
+                this._router.navigate( ['Edit', { id: this.entry.id }] );
+            });
+    }
+
+    onSelect(entry)
+    {
+        this._router.navigate( ['Edit', { id: entry.id }] );
+    }
+
+    loadDropzone(postID:number)
+    {
+        if(postID<1)
+            return;
         var previewNode = document.querySelector("#template");
         previewNode.id = "";
         var previewTemplate = previewNode.parentNode.innerHTML;
@@ -127,22 +147,12 @@ export class Edit {
         });
         dz.on('sending', function(file, xhr, formData){
             formData.append('JWT', 'bob');
-            formData.append('entryID', id);
+            formData.append('entryID', postID);
         });
         dz.on('complete', function(file){
             dz.removeFile(file);
-            this.loadFileNames(id);
+            this.loadFileNames(postID);
         }.bind(this));
-    }
-    onSave(event)
-    {
-        this.blogService.postEntry(this.entry)
-            .subscribe(res => this.entry =res);
-    }
-
-    onSelect(entry)
-    {
-        this._router.navigate( ['Edit', { id: entry.id }] );
     }
 
     login(event, username, password) {

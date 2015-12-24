@@ -27,6 +27,9 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
             BlogEntry = (function () {
                 function BlogEntry() {
                 }
+                BlogEntry.prototype.getHTML = function () {
+                    return markdown.toHTML(text);
+                };
                 return BlogEntry;
             })();
             exports_1("BlogEntry", BlogEntry);
@@ -70,6 +73,11 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
                 BlogService.prototype.getEntries = function () {
                     console.log('getEntries()');
                     return this.http.get('http://localhost:8080/api/admin/list.json')
+                        .map(function (res) { return res.json(); });
+                };
+                BlogService.prototype.getPublicEntries = function () {
+                    console.log('getPublicEntries()');
+                    return this.http.get('http://localhost:8080/api/entries.json')
                         .map(function (res) { return res.json(); });
                 };
                 BlogService.prototype.getImages = function (postID) {

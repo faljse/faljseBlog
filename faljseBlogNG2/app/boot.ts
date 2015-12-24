@@ -8,8 +8,6 @@ import {LocationStrategy,
 import {BlogService} from "./blog.service";
 import {APP_VIEW_POOL_CAPACITY} from 'angular2/src/core/linker/view_pool';
 
-
-
 bootstrap(AppComponent,[
     ROUTER_PROVIDERS,
     HTTP_PROVIDERS,
