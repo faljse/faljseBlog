@@ -28,9 +28,11 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                     this._routeParams = _routeParams;
                     this.blogService = _blogService;
                 }
-                Home.prototype.mDown = function (html) {
-                    if (html != null)
-                        return markdown.toHTML(html);
+                Home.prototype.mDown = function (text) {
+                    if (text != null) {
+                        var converter = new showdown.Converter();
+                        return converter.makeHtml(text);
+                    }
                     //return html;
                 };
                 Home.prototype.ngOnInit = function () {
@@ -44,7 +46,8 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                 Home = __decorate([
                     core_1.Component({
                         selector: 'home',
-                        styleUrls: ['app/home/home.css'],
+                        styleUrls: ['app/home/home.css',
+                            'app/home/lightbox.css'],
                         templateUrl: "app/home/home.html",
                         directives: [router_1.RouterLink]
                     }), 

@@ -6,7 +6,8 @@ import {BlogService} from "../blog.service";
 
 @Component({
     selector: 'home',
-    styleUrls: ['app/home/home.css'],
+    styleUrls: ['app/home/home.css',
+        'app/home/lightbox.css'],
     templateUrl: "app/home/home.html",
     directives: [RouterLink]
 })
@@ -15,14 +16,20 @@ export class Home {
     private blogService:BlogService;
     private  entries: Array<BlogEntry>;
 
+
     constructor(private _router: Router, private _routeParams:RouteParams, _blogService: BlogService) {
         this.blogService=_blogService;
     }
 
-    private mDown(html:string)
+    private mDown(text:string)
     {
-        if(html!=null)
-            return markdown.toHTML(html);
+        if(text!=null)
+        {
+            var converter = new showdown.Converter();
+            return converter.makeHtml(text);
+
+
+        }
         //return html;
     }
 
