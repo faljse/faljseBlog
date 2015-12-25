@@ -15,22 +15,25 @@ import {BlogService} from "../blog.service";
 export class Home {
     private blogService:BlogService;
     private  entries: Array<BlogEntry>;
+    private renderer;
+    private postID; //Hack for renderer;
+
+
 
 
     constructor(private _router: Router, private _routeParams:RouteParams, _blogService: BlogService) {
         this.blogService=_blogService;
+        this.renderer = new marked.Renderer();
+        this.initMarked(this.renderer);
     }
 
-    private mDown(text:string)
+    private mDown(entry)
     {
-        if(text!=null)
+        this.postID=entry.id;
+        if(entry.text!=null)
         {
-            var converter = new showdown.Converter();
-            return converter.makeHtml(text);
-
-
+            return marked(entry.text, { renderer: this.renderer });
         }
-        //return html;
     }
 
 
@@ -42,4 +45,21 @@ export class Home {
         event.preventDefault();
         this.router.parent.navigateByUrl('/signup');
     }
+
+    initMarked(renderer)
+    {
+        var self=this;
+        renderer.image = function(href, title, text) {
+            href=self.blogService.getImageURL(self.postID, href);
+            var out = '<img src="' +href + '" alt="' + text + '"';
+            if (title) {
+                out += ' title="' + title + '"';
+            }
+            out += this.options.xhtml ? '/>' : '>';
+            //console.log(out);
+            return out;
+        };
+
+    }
 }
+

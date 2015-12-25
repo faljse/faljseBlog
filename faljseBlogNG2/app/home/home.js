@@ -27,13 +27,14 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                     this._router = _router;
                     this._routeParams = _routeParams;
                     this.blogService = _blogService;
+                    this.renderer = new marked.Renderer();
+                    this.initMarked(this.renderer);
                 }
-                Home.prototype.mDown = function (text) {
-                    if (text != null) {
-                        var converter = new showdown.Converter();
-                        return converter.makeHtml(text);
+                Home.prototype.mDown = function (entry) {
+                    this.postID = entry.id;
+                    if (entry.text != null) {
+                        return marked(entry.text, { renderer: this.renderer });
                     }
-                    //return html;
                 };
                 Home.prototype.ngOnInit = function () {
                     var _this = this;
@@ -42,6 +43,19 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                 Home.prototype.signup = function (event) {
                     event.preventDefault();
                     this.router.parent.navigateByUrl('/signup');
+                };
+                Home.prototype.initMarked = function (renderer) {
+                    var self = this;
+                    renderer.image = function (href, title, text) {
+                        href = self.blogService.getImageURL(self.postID, href);
+                        var out = '<img src="' + href + '" alt="' + text + '"';
+                        if (title) {
+                            out += ' title="' + title + '"';
+                        }
+                        out += this.options.xhtml ? '/>' : '>';
+                        //console.log(out);
+                        return out;
+                    };
                 };
                 Home = __decorate([
                     core_1.Component({
