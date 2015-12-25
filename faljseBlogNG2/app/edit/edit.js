@@ -59,7 +59,7 @@ System.register(['angular2/core', 'angular2/router', '../blog.service', "../blog
                 };
                 Edit.prototype.onSelectImage = function (fileName) {
                     console.log(fileName);
-                    var text = '![alt](' + this.blogService.getImageURL(this.entry.id, fileName) + ' "txt")';
+                    var text = '![alt](' + fileName + ' "txt")';
                     this.insertAtCaret(this.textarea, text);
                 };
                 Edit.prototype.insertAtCaret = function (txtarea, text) {

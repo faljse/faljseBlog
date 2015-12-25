@@ -17,6 +17,7 @@ export class Home {
     private  entries: Array<BlogEntry>;
     private renderer;
     private postID; //Hack for renderer;
+    private lightbox;
 
 
 
@@ -25,6 +26,8 @@ export class Home {
         this.blogService=_blogService;
         this.renderer = new marked.Renderer();
         this.initMarked(this.renderer);
+        this.lightbox = new Lightbox();
+
     }
 
     private mDown(entry)
@@ -51,10 +54,11 @@ export class Home {
         var self=this;
         renderer.image = function(href, title, text) {
             href=self.blogService.getImageURL(self.postID, href);
-            var out = '<img src="' +href + '" alt="' + text + '"';
+            var out = '<img class="jslghtbx-thmb" onClick="lightbox.open(\''+href+'\')" src="'+href + '" alt="' + text + '"';
             if (title) {
                 out += ' title="' + title + '"';
             }
+            out+=' data-jslghtbx ';
             out += this.options.xhtml ? '/>' : '>';
             //console.log(out);
             return out;

@@ -136,7 +136,7 @@ export class Edit {
     onSelectImage(fileName)
     {
         console.log(fileName);
-        var text:String='![alt]('+this.blogService.getImageURL(this.entry.id,fileName)+ ' "txt")';
+        var text:String='![alt]('+fileName+ ' "txt")';
         this.insertAtCaret(this.textarea, text);
     }
 

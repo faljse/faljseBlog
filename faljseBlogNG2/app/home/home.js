@@ -29,6 +29,7 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                     this.blogService = _blogService;
                     this.renderer = new marked.Renderer();
                     this.initMarked(this.renderer);
+                    this.lightbox = new Lightbox();
                 }
                 Home.prototype.mDown = function (entry) {
                     this.postID = entry.id;
@@ -48,10 +49,11 @@ System.register(['angular2/core', 'angular2/router', "../blog.service"], functio
                     var self = this;
                     renderer.image = function (href, title, text) {
                         href = self.blogService.getImageURL(self.postID, href);
-                        var out = '<img src="' + href + '" alt="' + text + '"';
+                        var out = '<img class="jslghtbx-thmb" onClick="lightbox.open(\'' + href + '\')" src="' + href + '" alt="' + text + '"';
                         if (title) {
                             out += ' title="' + title + '"';
                         }
+                        out += ' data-jslghtbx ';
                         out += this.options.xhtml ? '/>' : '>';
                         //console.log(out);
                         return out;
