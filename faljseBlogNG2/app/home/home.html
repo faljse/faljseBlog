@@ -33,21 +33,15 @@
                         <div [innerHTML]=mDown(entry)>
                         </div>
                 </a>
-                <p class="post-meta">Posted by <a href="#">me</a> on December 24, 2015</p>
+                <p class="post-meta">Posted by <a href="#">me</a> on  {{ entry.created }}</p>
             </div>
+                <hr>
             </div>
-            <hr>
-            <!-- Pager -->
-            <ul class="pager">
-                <li class="next">
-                    <a href="#">Older Posts &rarr;</a>
-                </li>
-            </ul>
+
         </div>
     </div>
 </div>
 
-<hr>
 
 <!-- Footer -->
 <footer>
@@ -80,7 +74,7 @@
                         </a>
                     </li>
                 </ul>
-                <p class="copyright text-muted">Copyright &copy; Your Website 2014</p>
+                <p class="copyright text-muted">Martin Kunz, 2015</p>
             </div>
         </div>
     </div>

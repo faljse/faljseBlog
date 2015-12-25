@@ -12,11 +12,6 @@ export class BlogEntry {
     files: Array<string>;
     created: number;
     modified: number;
-
-    getHTML()
-    {
-        return markdown.toHTML(text);
-    }
 }
 
 export interface Blog {
@@ -55,7 +50,7 @@ export class BlogService {
             var headers = new Headers();
             console.log("pre save: "+JSON.stringify(entry));
             headers.append('Content-Type', 'application/json');
-            return this.http.post('http://localhost:8080/api/admin/write', JSON.stringify(entry),{
+            return this.http.post(this.baseURL+'admin/write', JSON.stringify(entry),{
                             headers: headers})
                             .map(res => res.json());
                             //.subscribe(
@@ -68,35 +63,28 @@ export class BlogService {
     getEntry(id:number)
     {
         console.log('getEntry(): '+id);
-         return   this.http.get('http://localhost:8080/api/admin/read/'+id)
+         return   this.http.get(this.baseURL+'admin/read/'+id)
                 .map(res => res.json());
-                //.subscribe(
-                //    data => this.result = new Array<BlogEntry>(data),
-                //    err => this.logError(err),
-                //    () => console.log(this.result.length)
-                //);
     }
 
     getEntries() {
         console.log('getEntries()');
-            return this.http.get('http://localhost:8080/api/admin/list.json')
+            return this.http.get(this.baseURL+'admin/list.json')
                 .map(res => res.json());
     }
 
     getPublicEntries()
     {
         console.log('getPublicEntries()');
-        return this.http.get('http://localhost:8080/api/entries.json')
+        return this.http.get(this.baseURL+'entries.json')
             .map(res => res.json());
     }
 
     getImages(postID:number) {
         console.log('getImages()');
-        return this.http.get('http://localhost:8080/api/admin/listImages/'+postID)
+        return this.http.get(this.baseURL+'admin/listImages/'+postID)
             .map(res => res.json());
     }
-
-
 }
 
 

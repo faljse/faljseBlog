@@ -27,9 +27,6 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
             BlogEntry = (function () {
                 function BlogEntry() {
                 }
-                BlogEntry.prototype.getHTML = function () {
-                    return markdown.toHTML(text);
-                };
                 return BlogEntry;
             })();
             exports_1("BlogEntry", BlogEntry);
@@ -54,7 +51,7 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
                     var headers = new http_1.Headers();
                     console.log("pre save: " + JSON.stringify(entry));
                     headers.append('Content-Type', 'application/json');
-                    return this.http.post('http://localhost:8080/api/admin/write', JSON.stringify(entry), {
+                    return this.http.post(this.baseURL + 'admin/write', JSON.stringify(entry), {
                         headers: headers })
                         .map(function (res) { return res.json(); });
                     //.subscribe(
@@ -65,27 +62,22 @@ System.register(['angular2/core', 'angular2/http', 'rxjs/add/operator/map'], fun
                 };
                 BlogService.prototype.getEntry = function (id) {
                     console.log('getEntry(): ' + id);
-                    return this.http.get('http://localhost:8080/api/admin/read/' + id)
+                    return this.http.get(this.baseURL + 'admin/read/' + id)
                         .map(function (res) { return res.json(); });
-                    //.subscribe(
-                    //    data => this.result = new Array<BlogEntry>(data),
-                    //    err => this.logError(err),
-                    //    () => console.log(this.result.length)
-                    //);
                 };
                 BlogService.prototype.getEntries = function () {
                     console.log('getEntries()');
-                    return this.http.get('http://localhost:8080/api/admin/list.json')
+                    return this.http.get(this.baseURL + 'admin/list.json')
                         .map(function (res) { return res.json(); });
                 };
                 BlogService.prototype.getPublicEntries = function () {
                     console.log('getPublicEntries()');
-                    return this.http.get('http://localhost:8080/api/entries.json')
+                    return this.http.get(this.baseURL + 'entries.json')
                         .map(function (res) { return res.json(); });
                 };
                 BlogService.prototype.getImages = function (postID) {
                     console.log('getImages()');
-                    return this.http.get('http://localhost:8080/api/admin/listImages/' + postID)
+                    return this.http.get(this.baseURL + 'admin/listImages/' + postID)
                         .map(function (res) { return res.json(); });
                 };
                 BlogService = __decorate([

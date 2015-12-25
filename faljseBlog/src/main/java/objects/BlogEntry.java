@@ -1,6 +1,10 @@
 package objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.deser.InstantDeserializer;
+import com.fasterxml.jackson.datatype.joda.ser.InstantSerializer;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,14 +23,16 @@ public class BlogEntry {
     private String text;
     @JsonProperty
     private List<String> files;
-    @JsonProperty
-    private Instant created;
 
     @JsonProperty
-    private Instant modified;
+    private long created;
 
+    @JsonProperty
+    private long modified;
 
     public BlogEntry() {
+        created=System.currentTimeMillis();
+        modified=System.currentTimeMillis();
 
     }
 
@@ -69,19 +75,5 @@ public class BlogEntry {
         this.files = files;
     }
 
-    public Instant getCreated() {
-        return created;
-    }
 
-    public void setCreated(Instant created) {
-        this.created = created;
-    }
-
-    public Instant getModified() {
-        return modified;
-    }
-
-    public void setModified(Instant modified) {
-        this.modified = modified;
-    }
 }

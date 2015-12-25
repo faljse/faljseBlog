@@ -41,8 +41,7 @@ import {BlogService} from "../blog.service";
     }`],
     template: `
     <header class="intro-header">
-
-</header>
+    </header>
 
     <div class="login jumbotron center-block">
     <div class="row">
@@ -62,9 +61,13 @@ import {BlogService} from "../blog.service";
               </div>
               </form>
         <textarea id="editorArea" [(ngModel)]="entry.text"></textarea>
+
         <button (click)="onSave(input, $event)"
-        [disabled]="text === 'Save'">Save</button>
-         <ul>
+        [disabled]="text === 'Save'">Save</button><br/>
+        <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">(markdown cheatsheet)</a>
+        <br/><br/>
+
+         <ul class="heroes">
           <li *ngFor="#fileName of imageFilenames" (click)="onSelectImage(fileName)">
             {{ fileName }}
           </li>
@@ -152,6 +155,7 @@ export class Edit {
         txtarea.selectionEnd = caretPos;
         txtarea.focus();
         txtarea.scrollTop = scrollPos;
+        txtarea.fire
     }
 
     onSelect(entry)
