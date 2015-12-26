@@ -111,9 +111,16 @@
                     }).then(function(json) {
                 console.log('parsed json', json)
                 var list = document.createElement('ul');
+                list.className="heroes";
+                var _this=this;
                 for(var i = 0; i < json.length; i++) {
                     var item = document.createElement('li');
-                    item.onclick=function(){console.log(this)};
+                    item.onclick = function (fName) {
+                        return function () {
+                            _this.editor.insert('!['+fName+']('+fName+' "titleText")\n');
+                        };
+                    }(json[i]);
+                    item.className="heroes";
                     item.appendChild(document.createTextNode(json[i]));
                     list.appendChild(item);
                 }
