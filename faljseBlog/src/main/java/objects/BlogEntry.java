@@ -22,25 +22,37 @@ public class BlogEntry {
     @JsonProperty
     private String text;
     @JsonProperty
-    private List<String> files;
-
+    private boolean published=false;
     @JsonProperty
     private long created;
-
     @JsonProperty
     private long modified;
 
-    public BlogEntry() {
-        created=System.currentTimeMillis();
-        modified=System.currentTimeMillis();
-
+    public long getCreated() {
+        return created;
     }
 
-    public BlogEntry(int id, String title, String text, List<String> files) {
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public long getModified() {
+        return modified;
+    }
+
+    public void setModified(long modified) {
+        this.modified = modified;
+    }
+
+    public BlogEntry() {
+        created = System.currentTimeMillis();
+        modified = System.currentTimeMillis();
+    }
+
+    public BlogEntry(int id, String title, String text) {
         this.id = id;
         this.title = title;
         this.text = text;
-        this.files = files;
     }
 
     public int getId() {
@@ -67,13 +79,11 @@ public class BlogEntry {
         this.text = text;
     }
 
-    public List<String> getFiles() {
-        return files;
+    public boolean getPublished() {
+        return published;
     }
 
-    public void setFiles(List<String> files) {
-        this.files = files;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
-
-
 }

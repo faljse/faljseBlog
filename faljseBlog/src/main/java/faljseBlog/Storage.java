@@ -1,5 +1,7 @@
 package faljseBlog;
 
+import com.google.common.collect.ImmutableList;
+import objects.Blog;
 import objects.BlogEntry;
 
 import java.io.File;
@@ -21,13 +23,30 @@ public class Storage {
 
 
     private final Path dir;
-    private List<BlogEntry> entries=new ArrayList();
+    private volatile ImmutableList<BlogEntry> entries=ImmutableList.of();
+    private volatile ImmutableList<BlogEntry> publishedEntries=ImmutableList.of();
 
-    public List<BlogEntry> getEntries() {
+
+    public ImmutableList<BlogEntry> getEntries() {
         return entries;
+    }
+    public List<BlogEntry> getPublishedEntries() {
+        synchronized (this)
+        {
+            if(publishedEntries==null)
+            {
+                ArrayList<BlogEntry> newPub=new ArrayList<>();
+                for(BlogEntry e:entries)
+                    if(e.getPublished())
+                        newPub.add(e);
+                publishedEntries=ImmutableList.copyOf(newPub);
+            }
+        }
+        return  publishedEntries;
     }
 
     public Storage(Path dir) {
+        List<BlogEntry> l=new ArrayList<>();
         this.dir=dir;
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir))
         {
@@ -35,22 +54,22 @@ public class Storage {
             {
                 if(Files.isDirectory(p))
                 {
-
                     BlogEntry e=parseEntry(p);
                     if(null!=e)
-                        entries.add(e);
+                        l.add(e);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        sort();
-
+        sort(l);
+        entries=ImmutableList.copyOf(l);
+        publishedEntries=null;
     }
 
-    private void sort()
+    private void sort(List<BlogEntry> ent)
     {
-        Collections.sort(entries, new Comparator<BlogEntry>() {
+        Collections.sort(ent, new Comparator<BlogEntry>() {
             @Override
             public int compare(BlogEntry o1, BlogEntry o2) {
                 return o2.getId()-o1.getId();
@@ -76,22 +95,23 @@ public class Storage {
 
     }
 
-    public BlogEntry write(BlogEntry e)
+    public BlogEntry upsert(BlogEntry e)
     {
+        ArrayList<BlogEntry> newList=new ArrayList<>();
+        newList.addAll(entries);
+
         if(e.getId()<1) {
             e.setId(getNewId());
-            entries.add(e);
+            newList.add(e);
         }
 
-       for(int i=0;i<entries.size();i++)
-       {
-           if(entries.get(i).getId()==e.getId())
-               entries.set(i,e);
-       }
-
+        for(int i=0;i<entries.size();i++)
+        {
+            if(entries.get(i).getId()==e.getId())
+                newList.set(i,e);
+        }
         String dirName=String.valueOf(e.getId());
         try {
-
             Path entryDir=dir.resolve(dirName);
             if(Files.notExists(entryDir))
                     Files.createDirectory(entryDir);
@@ -99,7 +119,9 @@ public class Storage {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        sort();
+        sort(newList);
+        entries=ImmutableList.copyOf(newList);
+        publishedEntries=null;
         return e;
     }
 
@@ -107,13 +129,10 @@ public class Storage {
         for(BlogEntry e:entries)
         {
             if(e.getId()==id)
-            {
-                System.out.println(e.getText());
                 return e;
-
-            }
-
         }
         return null;
     }
+
+
 }

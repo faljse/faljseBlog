@@ -10,6 +10,15 @@ import io.dropwizard.Configuration;
 public class GSConfiguration extends Configuration {
     private String faljseBlogDir;
     private String staticContentDir;
+    private String basePath;
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
 
     public String getStaticContentDir() {
         return staticContentDir;

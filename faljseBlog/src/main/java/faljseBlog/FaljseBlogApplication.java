@@ -1,14 +1,10 @@
 package faljseBlog;
-import com.google.common.base.Charsets;
+
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
-
-import io.dropwizard.servlets.assets.AssetServlet;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -16,7 +12,6 @@ import resources.RootResource;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
-import javax.servlet.ServletRegistration;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
@@ -29,6 +24,11 @@ import java.util.EnumSet;
 public class FaljseBlogApplication extends Application<GSConfiguration> {
 
     private static Storage storage;
+    private static GSConfiguration config;
+
+    public static GSConfiguration getConfig() {
+        return config;
+    }
 
     public static Storage getStorage() {
         return storage;
@@ -47,29 +47,36 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
 
     @Override
     public void initialize(Bootstrap<GSConfiguration> bootstrap) {
+        bootstrap.addBundle(new ViewBundle());
         //bootstrap.addBundle(new ViewBundle<GSConfiguration>());
-        //bootstrap.addBundle(new AssetsBundle("/assets", "/", "index.html"));
+        bootstrap.addBundle(new AssetsBundle("/assets", "/assets", "index.html"));
     }
 
     @Override
     public void run(GSConfiguration configuration,
                     Environment environment) {
+        config=configuration;
         FaljseBlogApplication.storage=new Storage(Paths.get(configuration.getFaljseBlogDir()));
 
         environment.jersey().setUrlPattern("/api/*");
         environment.jersey().register(new  RootResource(configuration));
         environment.jersey().register(MultiPartFeature.class);
 
-        ServletHolder holderHome = new ServletHolder("static-home", DefaultServlet.class);
+
+        EntriesServlet e=new EntriesServlet();
+        ServletHolder holderRoot = new ServletHolder("root", e);
+        environment.getApplicationContext().addServlet(holderRoot,"/");
+
+/*        ServletHolder holderHome = new ServletHolder("static-home", DefaultServlet.class);
         holderHome.setInitParameter("resourceBase",configuration.getStaticContentDir());
         holderHome.setInitParameter("dirAllowed","true");
         holderHome.setInitParameter("pathInfoOnly","true");
-        environment.getApplicationContext().addServlet(holderHome,"/*");
+        environment.getApplicationContext().addServlet(holderHome,"*//*");*/
 
         configureCors(environment);
 
-
     }
+
 
 
     private void configureCors(Environment environment) {
