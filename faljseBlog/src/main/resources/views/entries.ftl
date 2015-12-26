@@ -102,7 +102,10 @@
 
 <script>
    var lightbox = new Lightbox();
-    lightbox.load({loadingAnimation: false});
+    lightbox.load({loadingAnimation: true},
+            {closeOnClick: true}
+
+    );
    function openImage(href)
    {
        lightbox.open(href);

@@ -47,12 +47,18 @@ public class EntriesView extends View {
             } else {
                 this.append("<img");
                 this.append(" class=\"jslghtbx-thmb\" ");
-                this.append(" onClick=\"lightbox.open('");
-                this.append("./image/"+e.getId()+"/");
+                //this.append(" onClick=\"lightbox.open('");
+
+                this.append(" data-jslghtbx=\"./image/"+e.getId()+"/large/");
                 this.escapeAndAppend(resource.getLocation());
-                this.append("')\" ");
+                this.append("\"");
+
+                this.append(" data-jslghtbx-group=\"");
+                this.append(String.valueOf(e.getId()));
+                this.append("\" ");
+
                 this.append(" src=\"");
-                this.append("./image/"+e.getId()+"/");
+                this.append("./image/"+e.getId()+"/small/");
                 this.escapeAndAppend(resource.getLocation());
                 if(node.getText() != null) {
                     this.append("\" alt=\"");

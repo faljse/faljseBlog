@@ -664,26 +664,6 @@ function Lightbox() {
      * Init-function, must be called once
      * @param  {Object} opt Custom options
      */
-    CTX.load = function (obj, opt) {
-        // check for IE8
-        if (navigator.appVersion.indexOf('MSIE 8') > 0) {
-            isIE8 = true;
-        }
-        // check for IE9
-        if (navigator.appVersion.indexOf('MSIE 9') > 0) {
-            isIE9 = true;
-        }
-        // set options
-        setOpt(opt);
-        CTX.thumbnails.push(obj);
-        clckHlpr(obj);
-    };
-
-
-    /**
-     * Init-function, must be called once
-     * @param  {Object} opt Custom options
-     */
     CTX.load = function (opt) {
         // check for IE8
         if (navigator.appVersion.indexOf('MSIE 8') > 0) {

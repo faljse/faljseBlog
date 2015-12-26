@@ -37,14 +37,16 @@ public class PublicResource {
     }
 
     @GET
-    @Path("/image/{id}/{fileName}")
+    @Path("/image/{id}/{size}/{fileName}")
     @Produces("image/png")
     public InputStream getFileInputStream(@PathParam("id") int postID,
-                                          @PathParam("fileName") String fileName){
+                                          @PathParam("fileName") String fileName,
+                                          @PathParam("size") String size){
         String fName= Tools.sanitizeFileName(fileName);
+        size=Tools.sanitizeFileName(size);
         java.nio.file.Path imageDir = Tools.getImageDir(configuration.getFaljseBlogDir(), postID);
         try {
-            InputStream is = Files.newInputStream(imageDir.resolve(fName));
+            InputStream is = Files.newInputStream(imageDir.resolve(size).resolve(fName));
             return is;
         } catch (IOException e) {
             e.printStackTrace();
