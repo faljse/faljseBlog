@@ -11,6 +11,15 @@ public class GSConfiguration extends Configuration {
     private String faljseBlogDir;
     private String staticContentDir;
     private String basePath;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getBasePath() {
         return basePath;

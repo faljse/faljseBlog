@@ -1,13 +1,20 @@
 package faljseBlog;
 
+import faljseBlog.auth.ExampleAuthorizer;
+import faljseBlog.auth.SimpleAuthenticator;
+import faljseBlog.auth.User;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import resources.RootResource;
 
 import javax.servlet.DispatcherType;
@@ -58,6 +65,24 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
         config=configuration;
         FaljseBlogApplication.storage=new Storage(Paths.get(configuration.getFaljseBlogDir()));
 
+
+        //auth
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
+        final BasicCredentialAuthFilter<User> userBasicCredentialAuthFilter =
+                new BasicCredentialAuthFilter.Builder<User>()
+                        .setAuthenticator(new SimpleAuthenticator())
+                        .setRealm("Edit")
+                        .setAuthorizer(new ExampleAuthorizer())
+                        .buildAuthFilter();
+
+        environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        //</auth>
+
+
+
+
+
         environment.jersey().setUrlPattern("/api/*");
         environment.jersey().register(new  RootResource(configuration));
         environment.jersey().register(MultiPartFeature.class);
@@ -66,6 +91,8 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
         EntriesServlet e=new EntriesServlet();
         ServletHolder holderRoot = new ServletHolder("root", e);
         environment.getApplicationContext().addServlet(holderRoot,"/");
+
+
 
 /*        ServletHolder holderHome = new ServletHolder("static-home", DefaultServlet.class);
         holderHome.setInitParameter("resourceBase",configuration.getStaticContentDir());

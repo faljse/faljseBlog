@@ -1,5 +1,5 @@
 faljseBlogDir: D:\faljseblog\
 basePath: /
-staticContentDir: C:\projects\faljseBlog\src\main\resources\assets\
+password: 1314
 server:
   rootPath: '/api/*'

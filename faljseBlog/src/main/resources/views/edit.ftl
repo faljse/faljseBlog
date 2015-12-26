@@ -87,6 +87,7 @@
             var self=this;
             fetch('../write', {
                 method: 'post',
+                credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -105,7 +106,8 @@
         }
         function loadFileNames(postID)
         {
-            fetch('../listImages/'+postID)
+            fetch('../listImages/'+postID,
+                    {credentials: 'same-origin'})
                     .then(function(response) {
                         return response.json()
                     }).then(function(json) {
@@ -147,6 +149,7 @@
                 thumbnailWidth: 80,
                 thumbnailHeight: 80,
                 parallelUploads: 20,
+                withCredentials: true,
                 previewTemplate: previewTemplate,
                 autoQueue: true, // Make sure the files aren't queued until manually added
                 previewsContainer: "#previews", // Define the container to display the previews

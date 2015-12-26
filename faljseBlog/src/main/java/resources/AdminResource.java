@@ -3,6 +3,8 @@ package resources;
 import faljseBlog.FaljseBlogApplication;
 import faljseBlog.GSConfiguration;
 import faljseBlog.Tools;
+import faljseBlog.auth.User;
+import io.dropwizard.auth.Auth;
 import objects.BlogEntry;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -27,16 +29,14 @@ import org.imgscalr.Scalr;
 public class AdminResource {
 
     private final GSConfiguration config;
-
     public AdminResource(GSConfiguration configuration) {
         this.config=configuration;
     }
 
-
     @GET
     @Path("/list.json")
     @Produces("application/json")
-    public Response list() {
+    public Response list(@Auth User user) {
         List<BlogEntry> entries=FaljseBlogApplication.getStorage().getEntries();
         return Response.ok().status(200).entity(entries).build();
     }
@@ -44,7 +44,8 @@ public class AdminResource {
     @GET
     @Path("/read/{id}")
     @Produces("application/json")
-    public Response read(@PathParam("id") int id) {
+    public Response read(@Auth User user,
+                         @PathParam("id") int id) {
         BlogEntry e=FaljseBlogApplication.getStorage().getEntry(id);
         if(e==null)
             e=new BlogEntry();
@@ -55,7 +56,8 @@ public class AdminResource {
     @Path("/write")
     @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response write(BlogEntry e) {
+    public Response write(@Auth User user,
+                          BlogEntry e) {
         FaljseBlogApplication.getStorage().upsert(e);
         return Response.ok().status(200).entity(e).build();
     }
@@ -93,6 +95,7 @@ public class AdminResource {
     @Path("/uploadImage")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadImage(
+            //@Auth User user,
             @FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @FormDataParam("entryID") int entryID) {
@@ -130,7 +133,8 @@ public class AdminResource {
     @GET
     @Path("/listImages/{id}")
     @Produces("application/json")
-    public Response listImages(@PathParam("id") int id) {
+    public Response listImages(@Auth User user,
+                               @PathParam("id") int id) {
         if(id<0)
             return Response.ok().status(200).entity(new ArrayList<String>()).build();
         java.nio.file.Path imagesDir=Tools.getImageDir(config.getFaljseBlogDir(),id);
@@ -147,7 +151,8 @@ public class AdminResource {
     @GET
     @Path("/edit/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public EditView getEditView(@PathParam("id") int id) {
+    public EditView getEditView(@Auth User user,
+                                @PathParam("id") int id) {
         BlogEntry e= FaljseBlogApplication.getStorage().getEntry(id);
         if(e==null) {
             e = new BlogEntry();
@@ -201,7 +206,7 @@ public class AdminResource {
     @POST
     @Path("/reset")
     @Produces("text/html")
-    public Response reset() {
+    public Response reset(@Auth User user) {
 
         
         return Response.ok().status(200).entity("OK").build();
