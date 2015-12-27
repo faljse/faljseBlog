@@ -17,7 +17,8 @@ public class BaseView extends View{
         super(templateName);
     }
 
-    public String toHtml(String text, BlogEntry e) {
-        return ViewTools.toHTML(text, e);
+    public String toHtml(String text, BlogEntry e, boolean enableLightBox) {
+        return ViewTools.toHTML(text, e, enableLightBox);
     }
+
 }

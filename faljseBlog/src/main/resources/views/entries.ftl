@@ -49,7 +49,7 @@
                         </h2>
                         <h3 class="post-subtitle">
                         </h3>
-                        ${toHtml(entry.headerText, entry)}
+                        ${toHtml(entry.headerText, entry, false)}
                     </a>
                     <p class="post-meta">Posted by <a href="#">me</a> on ${entry.created?number_to_date}</p>
                 </div>

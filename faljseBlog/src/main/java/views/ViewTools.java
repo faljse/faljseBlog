@@ -20,13 +20,13 @@ import java.io.StringWriter;
  */
 public class ViewTools {
 
-    public static String toHTML(String markdown, BlogEntry e)
+    public static String toHTML(String markdown, BlogEntry e, boolean enableLightBox)
     {
         if(markdown==null)
             return "";
         Markdown md = new Markdown();
         StringWriter sw=new StringWriter();
-        Visitor v=new Asd(sw, e);
+        Visitor v=new Asd(sw, e, enableLightBox);
         Parser parser = new Parser(new StringReader(markdown));
         try {
             Document doc = parser.parse();
@@ -39,10 +39,12 @@ public class ViewTools {
     private static class Asd extends HtmlEmitter
     {
         private BlogEntry e;
-        public Asd(Appendable buffer, BlogEntry e)
+        private boolean enableLightBox;
+        public Asd(Appendable buffer, BlogEntry e, boolean enableLightBox)
         {
             super(buffer);
             this.e=e;
+            this.enableLightBox=enableLightBox;
         }
 
         @Override
@@ -56,19 +58,20 @@ public class ViewTools {
             } else {
                 this.append("<img");
                 this.append(" class=\"jslghtbx-thmb\" ");
-                //this.append(" onClick=\"lightbox.open('");
+                if(enableLightBox) {
 
-                this.append(" data-jslghtbx=\"");
-                this.append(config.getBasePath());
-                this.append("api/pub/image/");
-                this.append(String.valueOf(e.getId()));
-                this.append("/large/");
-                this.escapeAndAppend(resource.getLocation());
-                this.append("\"");
+                    this.append(" data-jslghtbx=\"");
+                    this.append(config.getBasePath());
+                    this.append("api/pub/image/");
+                    this.append(String.valueOf(e.getId()));
+                    this.append("/large/");
+                    this.escapeAndAppend(resource.getLocation());
+                    this.append("\"");
 
-                this.append(" data-jslghtbx-group=\"");
-                this.append(String.valueOf(e.getId()));
-                this.append("\" ");
+                    this.append(" data-jslghtbx-group=\"");
+                    this.append(String.valueOf(e.getId()));
+                    this.append("\" ");
+                }
 
                 this.append(" src=\"");
                 this.append(config.getBasePath());

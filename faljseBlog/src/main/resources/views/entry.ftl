@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-heading">
-                    ${toHtml(entry.headerText, entry)}
+                    ${toHtml(entry.headerText, entry, true)}
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                ${toHtml(entry.text, entry)}
+                ${toHtml(entry.text, entry, true)}
                 <#--<h2 class="section-heading">The Final Frontier</h2>-->
                 <#--<blockquote>The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.</blockquote>-->
                 <#--<h2 class="section-heading">Reaching for the Stars</h2>-->

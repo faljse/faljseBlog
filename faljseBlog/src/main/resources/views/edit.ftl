@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
     <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
     <link rel="stylesheet" href="${basePath}assets/app.css">
-    <link rel="stylesheet" href="${basePath}assets/dropzone.css">
-    <link rel="stylesheet" href="${basePath}assets/cobalt.css">
 
     <script src="${basePath}assets/es6-promise.min.js"></script>
     <script src="${basePath}assets/fetch.js"></script>
@@ -20,9 +18,6 @@
     <script src="${basePath}assets/codemirror/mode/javascript/javascript.js"></script>
     <script src="${basePath}assets/codemirror/mode/markdown/markdown.js"></script>
     <#--/codemirror-->
-
-
-    <script src="${basePath}assets/dropzone.js"></script>
 </head>
 <body>
 <#include "includes/navigation.ftl">
@@ -63,27 +58,11 @@
 
             <div id="fileList">
                 </div>
-
-            <div class="table table-striped" class="files" id="previews">
-                <div id="template" class="file-row">
-                    <!-- This is used as the file preview template -->
-                    <div>
-                        <span class="preview"><img data-dz-thumbnail /></span>
-                    </div>
-                    <div>
-                        <p class="name" data-dz-name></p>
-                        <strong class="error text-danger" data-dz-errormessage></strong>
-                    </div>
-                    <div>
-                        <p class="size" data-dz-size></p>
-                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                            <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <label for="fileselect">Files to upload:</label>
+                <input type="file" id="fileselect" name="fileselect[]" multiple="multiple" />
+                <div id="filedrag">or drop files here</div>
             </div>
-            <div id="upload" style="width: 300px;height:70px;border:dashed;">upload Files</div>
-
         </div>
 
     </div>
@@ -116,7 +95,7 @@
             var title=document.getElementById('title');
             var published=document.getElementById('published');
             var self=this;
-            fetch('../write', {
+            fetch('${basePath}api/admin/write', {
                 method: 'post',
                 credentials: 'same-origin',
                 headers: {
@@ -132,18 +111,77 @@
                 })
             });
         }
+
+        function onDropFile(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+
+        function InitDrop() {
+            var fileselect = document.getElementById("fileselect");
+            var filedrag = document.getElementById("filedrag");
+
+            // file select
+            fileselect.addEventListener("change", FileSelectHandler, false);
+            filedrag.addEventListener("dragover", FileDragHover, false);
+            filedrag.addEventListener("dragleave", FileDragHover, false);
+            filedrag.addEventListener("drop", FileSelectHandler, false);
+            filedrag.style.display = "block";
+
+        }
+        // file drag hover
+        function FileDragHover(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.target.className = (e.type == "dragover" ? "hover" : "");
+        }
+        function ParseFile(file) {
+            var data = new FormData();
+            data.append('file', file);
+            data.append('user', 'hubot');
+            data.append('entryID',${entry.id});
+            fetch('${basePath}api/admin/uploadImage', {
+                method: 'post',
+                credentials: 'same-origin',
+                body: data
+            }).then(function(data) {
+                this.loadFileNames(${entry.id});
+                console.log('request succeeded with JSON response', data)
+            }).catch(function(error) {
+                this.loadFileNames(${entry.id});
+                console.log('request failed', error)
+            });
+
+        }
+
+        // file selection
+        function FileSelectHandler(e) {
+
+            // cancel event and hover styling
+            FileDragHover(e);
+
+            // fetch FileList object
+            var files = e.target.files || e.dataTransfer.files;
+
+            // process all File objects
+            for (var i = 0, f; f = files[i]; i++) {
+                ParseFile(f);
+            }
+
+        }
+
         function onSelectImage(entry)
         {
             console.log("onSelectImage"+entry);
         }
         function loadFileNames(postID)
         {
-            fetch('../listImages/'+postID,
+            fetch('${basePath}api/admin/listImages/'+postID,
                     {credentials: 'same-origin'})
                     .then(function(response) {
                         return response.json()
                     }).then(function(json) {
-                console.log('parsed json', json)
                 var list = document.createElement('ul');
                 list.className="heroes";
                 var _this=this;
@@ -158,44 +196,12 @@
                     item.appendChild(document.createTextNode(json[i]));
                     list.appendChild(item);
                 }
-
                 var flist=document.getElementById('fileList')
                 flist.removeChild(flist.firstChild);
                 flist.appendChild(list);
             }).catch(function(ex) {
                 console.log('parsing failed', ex)
             })
-        }
-
-        function loadDropzone(postID)
-        {
-            if(postID<1)
-                return;
-            var previewNode = document.querySelector("#template");
-            previewNode.id = "";
-            var previewTemplate = previewNode.parentNode.innerHTML;
-            previewNode.parentNode.removeChild(previewNode);
-
-            var dz = new Dropzone("div#upload", {
-                url:  '../uploadImage',
-                thumbnailWidth: 80,
-                thumbnailHeight: 80,
-                parallelUploads: 20,
-                withCredentials: true,
-                previewTemplate: previewTemplate,
-                autoQueue: true, // Make sure the files aren't queued until manually added
-                previewsContainer: "#previews", // Define the container to display the previews
-                clickable: "div#upload" // Define the element that should be used as click trigger to select files.
-
-            });
-            dz.on('sending', function(file, xhr, formData){
-                formData.append('JWT', 'bob');
-                formData.append('entryID', postID);
-            });
-            dz.on('complete', function(file){
-                dz.removeFile(file);
-                this.loadFileNames(postID);
-            }.bind(this));
         }
 
         var editor;
@@ -207,7 +213,6 @@
         {
             this.tabHeader=document.getElementById("tabHeader");
             this.tabContent=document.getElementById("tabContent");
-
             this.docHeaderText=CodeMirror.Doc("${(entry.headerText?js_string)!}","markdown");
             this.docText=CodeMirror.Doc("${(entry.text?js_string)!}","markdown");
 
@@ -220,8 +225,8 @@
             });
             this.editor.setSize("100%","100%");
 
-            this.loadDropzone(${entry.id});
             this.loadFileNames(${entry.id});
+            this.InitDrop();
         }
     </script>
 </body>
