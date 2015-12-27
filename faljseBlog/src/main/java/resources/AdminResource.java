@@ -95,7 +95,7 @@ public class AdminResource {
     @Path("/uploadImage")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadImage(
-            //@Auth User user,
+            @Auth User user,
             @FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @FormDataParam("entryID") int entryID) {
