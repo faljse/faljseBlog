@@ -14,7 +14,14 @@ public class EntriesServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
         PrintWriter pw=resp.getWriter();
-        resp.sendRedirect(FaljseBlogApplication.getConfig().getBasePath()+"api/pub/list");
+        String basePath = FaljseBlogApplication.getConfig().getBasePath();
+
+        if(req.getScheme().equals("http")) {
+            String hostname = req.getServerName();
+            resp.sendRedirect("https://"+hostname+basePath+"api/pub/list");
+        }
+        else
+            resp.sendRedirect(basePath+"api/pub/list");
         pw.close();
     }
 }

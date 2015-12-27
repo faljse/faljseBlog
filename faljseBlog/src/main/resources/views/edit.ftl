@@ -2,19 +2,30 @@
 <html>
 <head>
     <title>faljseBlog</title>
-    <link rel="stylesheet" href="../../../assets/clean-blog.min.css">
-    <link rel="stylesheet" href="../../../assets/bootstrap.min.css">
-    <link rel="stylesheet" href="../../../assets/clean-blog.min.css">
-    <link rel="stylesheet" href="../../../assets/bootstrap.min.css">
-    <link rel="stylesheet" href="../../../assets/app.css">
-    <link rel="stylesheet" href="../../../assets/dropzone.css">
-    <script src="../../../assets/es6-promise.min.js"></script>
-    <script src="../../../assets/fetch.js"></script>
-    <script src="../../../assets/ace/ace.js"></script>
-    <script src="../../../assets/dropzone.js"></script>
+    <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
+    <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
+    <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
+    <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
+    <link rel="stylesheet" href="${basePath}assets/app.css">
+    <link rel="stylesheet" href="${basePath}assets/dropzone.css">
+    <link rel="stylesheet" href="${basePath}assets/cobalt.css">
+
+    <script src="${basePath}assets/es6-promise.min.js"></script>
+    <script src="${basePath}assets/fetch.js"></script>
+
+    <#--codemirror-->
+    <link rel="stylesheet" href="${basePath}assets/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="${basePath}assets/codemirror/theme/cobalt.css">
+    <script src="${basePath}assets/codemirror/lib/codemirror.js"></script>
+    <script src="${basePath}assets/codemirror/mode/javascript/javascript.js"></script>
+    <script src="${basePath}assets/codemirror/mode/markdown/markdown.js"></script>
+    <#--/codemirror-->
+
+
+    <script src="${basePath}assets/dropzone.js"></script>
 </head>
 <body>
-<#include "navigation.ftl">
+<#include "includes/navigation.ftl">
 <header class="intro-header">
 </header>
 <!-- Main Content -->
@@ -24,7 +35,7 @@
             <ul class="heroes">
             <#list entries as e>
                 <li onclick="onSelect(this)">
-                    <a href="../edit/${e.id}">
+                    <a href="${basePath}api/admin/edit/${e.id}">
                         <span class="badge">${e.id}</span> ${e.title}
                     </a>
                 </li>
@@ -34,16 +45,19 @@
         <div class="col-xs-10">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="title">Title</label>
                     <input type="text" class="form-control" id="title" value="${(entry.title)!}">
                     <label for="title">id: ${(entry.id)!}</label>&nbsp;
                     <input type="checkbox" class="checkbox"  id="published" ${(entry.published)?then("checked","")}>published<br/>
-                    <div id="editor" style="width: 600px;height: 400px;">${(entry.text)!}</div>
 
+                    <ul class="nav nav-tabs">
+                        <li id="tabHeader" role="presentation" class="active" onclick="changeBuffer('header')"><a href="#">Header</a></li>
+                        <li id="tabContent" role="presentation" onclick="changeBuffer('content')"><a href="#">Content</a></li>
+                    </ul>
+                    <div id="editor" style="width: 800px;height: 400px;"></div>
                 </div>
             </form>
 
-            <button onclick="onSave(this)" >Save</button><br/>
+            <button onclick="onSave(this)" class="btn btn-primary" >Save</button><br/>
                 <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">(markdown cheatsheet)</a>
             <br/><br/>
 
@@ -75,6 +89,23 @@
     </div>
 
     <script>
+        function changeBuffer(which)
+        {
+            if(which==="content")
+            {
+                tabHeader.className = "";
+                tabContent.className = "active";
+                this.editor.swapDoc(this.docText);
+            }
+            else if(which==="header")
+            {
+                tabHeader.className = "active";
+                tabContent.className = "";
+                this.editor.swapDoc(this.docHeaderText);
+
+            }
+        }
+
         function onSelect(entry)
         {
             console.log("onselect"+entry);
@@ -96,7 +127,8 @@
                     id: ${entry.id},
                     title: title.value,
                     published: published.checked,
-                    text: self.editor.getValue()
+                    text: self.docText.getValue(),
+                    headerText: self.docHeaderText.getValue(),
                 })
             });
         }
@@ -119,7 +151,7 @@
                     var item = document.createElement('li');
                     item.onclick = function (fName) {
                         return function () {
-                            _this.editor.insert('!['+fName+']('+fName+' "titleText")\n');
+                            _this.editor.replaceSelection('!['+fName+']('+fName+' "titleText")\n');
                         };
                     }(json[i]);
                     item.className="heroes";
@@ -167,11 +199,27 @@
         }
 
         var editor;
+        var docHeaderText;
+        var docText;
+        var tabHeader;
+        var tabContent;
         window.onload=function()
         {
-            this.editor = ace.edit("editor");
-            this.editor.setTheme("ace/theme/twilight");
-            this.editor.session.setMode("ace/mode/markdown");
+            this.tabHeader=document.getElementById("tabHeader");
+            this.tabContent=document.getElementById("tabContent");
+
+            this.docHeaderText=CodeMirror.Doc("${(entry.headerText?js_string)!}","markdown");
+            this.docText=CodeMirror.Doc("${(entry.text?js_string)!}","markdown");
+
+            this.editor = CodeMirror(document.getElementById("editor"), {
+                    value: this.docHeaderText,
+                    lineNumbers:true,
+                    mode:  "markdown",
+                    theme: "cobalt",
+
+            });
+            this.editor.setSize("100%","100%");
+
             this.loadDropzone(${entry.id});
             this.loadFileNames(${entry.id});
         }

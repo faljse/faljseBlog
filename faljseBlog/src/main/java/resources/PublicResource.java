@@ -5,6 +5,7 @@ import faljseBlog.GSConfiguration;
 import faljseBlog.Tools;
 import objects.BlogEntry;
 import views.EntriesView;
+import views.EntryView;
 
 import javax.servlet.annotation.MultipartConfig;
 import javax.ws.rs.GET;
@@ -68,6 +69,14 @@ public class PublicResource {
     public EntriesView getEntries() {
             return new EntriesView(FaljseBlogApplication.getStorage().getPublishedEntries());
     }
+
+    @GET
+    @Path("/entry/{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public EntryView getEntries(@PathParam("id") int postID) {
+        return new EntryView(FaljseBlogApplication.getStorage().getEntry(postID));
+    }
+
 
     // save uploaded file to new location
     private void writeToFile(InputStream uploadedInputStream,

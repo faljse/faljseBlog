@@ -19,11 +19,9 @@ import java.util.List;
 /**
  * Created by Martin on 24.10.2015.
  */
-public class EditView extends View {
+public class EditView extends BaseView {
     private BlogEntry entry;
     private List<BlogEntry> entries;
-
-
 
     public List<BlogEntry> getEntries() {
         return entries;
@@ -34,10 +32,6 @@ public class EditView extends View {
 
     public BlogEntry getEntry() {
         return entry;
-    }
-    public String getBasePath()
-    {
-        return FaljseBlogApplication.getConfig().getBasePath();
     }
 
     public void setEntry(BlogEntry entry) {
