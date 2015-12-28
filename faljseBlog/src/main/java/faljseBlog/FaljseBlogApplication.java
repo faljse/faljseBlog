@@ -32,15 +32,17 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
 
     private static Storage storage;
     private static GSConfiguration config;
-
     public static GSConfiguration getConfig() {
         return config;
     }
-
     public static Storage getStorage() {
         return storage;
     }
 
+    static { /* force headless mode*/
+        System.setProperty("java.awt.headless", "true");
+        System.out.println("Headless: "+java.awt.GraphicsEnvironment.isHeadless());
+    }
     public static void main(String[] args) throws Exception {
         //printClassPath();
         new FaljseBlogApplication().run(args);
