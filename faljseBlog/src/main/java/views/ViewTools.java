@@ -19,14 +19,15 @@ import java.io.StringWriter;
  * Created by Martin on 27.12.2015.
  */
 public class ViewTools {
+    public enum ImageRendering{SKIP, LIGHTBOX, PLAIN}
 
-    public static String toHTML(String markdown, BlogEntry e, boolean enableLightBox)
+    public static String toHTML(String markdown, BlogEntry e, ImageRendering imgr)
     {
         if(markdown==null)
             return "";
         Markdown md = new Markdown();
         StringWriter sw=new StringWriter();
-        Visitor v=new Asd(sw, e, enableLightBox);
+        Visitor v=new Asd(sw, e, imgr);
         Parser parser = new Parser(new StringReader(markdown));
         try {
             Document doc = parser.parse();
@@ -39,16 +40,18 @@ public class ViewTools {
     private static class Asd extends HtmlEmitter
     {
         private BlogEntry e;
-        private boolean enableLightBox;
-        public Asd(Appendable buffer, BlogEntry e, boolean enableLightBox)
+        private ImageRendering imgr;
+        public Asd(Appendable buffer, BlogEntry e, ImageRendering imgr)
         {
             super(buffer);
             this.e=e;
-            this.enableLightBox=enableLightBox;
+            this.imgr=imgr;
         }
 
         @Override
         public void visit(Image node) {
+            if(imgr==ImageRendering.SKIP)
+                return;
             Resource resource = node.getResource();
             GSConfiguration config = FaljseBlogApplication.getConfig();
             if(resource == null) {
@@ -58,7 +61,7 @@ public class ViewTools {
             } else {
                 this.append("<img");
                 this.append(" class=\"jslghtbx-thmb\" ");
-                if(enableLightBox) {
+                if(imgr==ImageRendering.LIGHTBOX) {
 
                     this.append(" data-jslghtbx=\"");
                     this.append(config.getBasePath());

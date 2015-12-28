@@ -1,3 +1,4 @@
+<#ftl encoding="utf-8">
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -8,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${basePath}api/pub/list">faljseBlog</a>
+            <a class="navbar-brand" href="${basePath}api/pub/list">${blogTitle}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->

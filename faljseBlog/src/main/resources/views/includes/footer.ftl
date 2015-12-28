@@ -1,3 +1,4 @@
+<#ftl encoding="utf-8">
 <footer>
     <div class="container">
         <div class="row">

@@ -1,7 +1,10 @@
+<#ftl encoding="utf-8">
 <#-- @ftlvariable name="" type="views.EntriesView" -->
 <html>
 <head>
-    <title>faljseBlog</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>${blogTitle}</title>
     <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
     <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
     <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">

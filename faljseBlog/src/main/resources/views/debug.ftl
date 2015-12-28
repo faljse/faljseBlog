@@ -1,3 +1,4 @@
+<#ftl encoding="utf-8">
 <#-- @ftlvariable name="" type="views.SurveyView" -->
 <!DOCTYPE html>
 <html>

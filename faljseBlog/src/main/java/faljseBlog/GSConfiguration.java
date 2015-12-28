@@ -12,6 +12,7 @@ public class GSConfiguration extends Configuration {
     private String staticContentDir;
     private String basePath;
     private String password;
+    private String blogTitle;
 
     public String getPassword() {
         return password;
@@ -42,5 +43,13 @@ public class GSConfiguration extends Configuration {
     }
     public String getFaljseBlogDir() {
         return faljseBlogDir;
+    }
+
+    public String getBlogTitle() {
+        return blogTitle;
+    }
+
+    public void setBlogTitle(String blogTitle) {
+        this.blogTitle = blogTitle;
     }
 }

@@ -1,20 +1,8 @@
+<#ftl encoding="utf-8">
 <#-- @ftlvariable name="" type="views.EntriesView" -->
 <html>
-<head>
-    <title>faljseBlog</title>
-    <link rel="stylesheet" href="${basePath}assets/jsOnlyLightbox/css/lightbox.css">
-    <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
-    <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
-    <script src="${basePath}assets/jsOnlyLightbox/js/lightbox.js"></script>
+<#include "includes/head.ftl">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
 <body>
 <!-- Navigation -->
 <#include "includes/navigation.ftl">
@@ -49,7 +37,7 @@
                         </h2>
                         <h3 class="post-subtitle">
                         </h3>
-                        ${toHtml(entry.headerText, entry, false)}
+                        ${toHtml(entry.headerText, entry, "LIGHTBOX")}
                     </a>
                     <p class="post-meta">Posted by <a href="#">me</a> on ${entry.created?number_to_date}</p>
                 </div>
@@ -61,19 +49,5 @@
 </div>
 <!-- Footer -->
 <#include "includes/footer.ftl">
-
-
-<script>
-   var lightbox = new Lightbox();
-    lightbox.load({loadingAnimation: true},
-            {closeOnClick: true}
-
-    );
-   function openImage(href)
-   {
-       lightbox.open(href);
-   }
-
-</script>
 </body>
 </html>

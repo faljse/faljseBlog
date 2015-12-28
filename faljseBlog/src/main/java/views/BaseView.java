@@ -4,6 +4,7 @@ import faljseBlog.FaljseBlogApplication;
 import io.dropwizard.views.View;
 import objects.BlogEntry;
 
+
 /**
  * Created by Martin on 27.12.2015.
  */
@@ -17,8 +18,15 @@ public class BaseView extends View{
         super(templateName);
     }
 
-    public String toHtml(String text, BlogEntry e, boolean enableLightBox) {
-        return ViewTools.toHTML(text, e, enableLightBox);
+    public String toHtml(String text, BlogEntry e, String imgrString)
+    {
+        ViewTools.ImageRendering imgr = ViewTools.ImageRendering.valueOf(imgrString);
+        return ViewTools.toHTML(text, e, imgr);
+    }
+
+    public String getBlogTitle()
+    {
+        return FaljseBlogApplication.getConfig().getBlogTitle();
     }
 
 }

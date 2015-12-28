@@ -1,5 +1,6 @@
 faljseBlogDir: D:\faljseblog\
 basePath: /
+blogTitle: myBlog
 password: pass
 server:
   rootPath: '/api/*'

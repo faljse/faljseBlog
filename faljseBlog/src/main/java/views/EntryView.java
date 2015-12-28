@@ -15,6 +15,8 @@ import org.tautua.markdownpapers.parser.Parser;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Martin on 24.10.2015.
@@ -33,5 +35,13 @@ public class EntryView extends BaseView {
     public EntryView(BlogEntry entry) {
         super("entry.ftl");
         this.entry=entry;
+    }
+
+    public String firstImgLink(String markdown)
+    {
+        Pattern p=Pattern.compile("!\\[.*\\]\\((.*)\\ \".*\"\\)");
+        Matcher m=p.matcher(markdown);
+        m.find();
+        return m.group(1);
     }
 }
