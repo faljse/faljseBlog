@@ -13,3 +13,6 @@ faljseBlog is a very simple [dropwizard](http://www.dropwizard.io/) based blog s
 * Edit: _config.yml_
 * Run:  _java -server  -Djava.awt.headless=true -jar faljseBlog-1.0-SNAPSHOT.jar server config.yml_
 * Access: [http://localhost:8080/api/pub/list/](http://localhost:8080/api/pub/list/)
+
+
+Running at: [https://faljse.info](https://faljse.info)
