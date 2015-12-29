@@ -1,6 +1,12 @@
 faljseBlogDir: D:\faljseblog\
 basePath: /
 blogTitle: myBlog
+linkTwitter: #
+linkFacebook: #
+linkGitHub: #
+
 password: pass
 server:
   rootPath: '/api/*'
+
+trackingScript:

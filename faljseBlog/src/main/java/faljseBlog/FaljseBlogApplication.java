@@ -8,6 +8,7 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.servlets.assets.AssetServlet;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.views.ViewBundle;
@@ -67,7 +68,6 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
         config=configuration;
         FaljseBlogApplication.storage=new Storage(Paths.get(configuration.getFaljseBlogDir()));
 
-
         //auth
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         final BasicCredentialAuthFilter<User> userBasicCredentialAuthFilter =
@@ -80,9 +80,6 @@ public class FaljseBlogApplication extends Application<GSConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(userBasicCredentialAuthFilter));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
         //</auth>
-
-
-
 
 
         environment.jersey().setUrlPattern("/api/*");

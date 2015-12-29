@@ -55,7 +55,7 @@
 <hr>
 <!-- Footer -->
 <#include "includes/footer.ftl">
-
+<script src="${basePath}assets/jsOnlyLightbox/js/lightbox.js"></script>
 <script>
    var lightbox = new Lightbox();
     lightbox.load({loadingAnimation: true},
@@ -66,5 +66,6 @@
        lightbox.open(href);
    }
 </script>
+${trackingScript}
 </body>
 </html>

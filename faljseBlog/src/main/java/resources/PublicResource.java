@@ -12,10 +12,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,15 +40,29 @@ public class PublicResource {
     @GET
     @Path("/image/{id}/{size}/{fileName}")
     @Produces("image/png")
-    public InputStream getFileInputStream(@PathParam("id") int postID,
+    public Response getImage(@PathParam("id") int postID,
                                           @PathParam("fileName") String fileName,
-                                          @PathParam("size") String size){
+                                          @PathParam("size") String size,
+                             @Context Request request){
         String fName= Tools.sanitizeFileName(fileName);
         size=Tools.sanitizeFileName(size);
         java.nio.file.Path imageDir = Tools.getImageDir(configuration.getFaljseBlogDir(), postID);
+
+
+
         try {
-            InputStream is = Files.newInputStream(imageDir.resolve(size).resolve(fName));
-            return is;
+            CacheControl cc = new CacheControl();
+            cc.setMaxAge(86400);
+            java.nio.file.Path filePath = imageDir.resolve(size).resolve(fName);
+            BasicFileAttributes attrs = Files.readAttributes(filePath, BasicFileAttributes.class);
+            EntityTag etag = new EntityTag(Integer.toString(attrs.lastModifiedTime().hashCode()));
+            Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+            if(builder==null){
+                builder=Response.ok(Files.newInputStream(filePath));
+                builder.tag(etag);
+            }
+            builder.cacheControl(cc);
+            return builder.build();
         } catch (IOException e) {
             e.printStackTrace();
         }

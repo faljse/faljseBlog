@@ -9,10 +9,14 @@ import io.dropwizard.Configuration;
  */
 public class GSConfiguration extends Configuration {
     private String faljseBlogDir;
-    private String staticContentDir;
-    private String basePath;
-    private String password;
-    private String blogTitle;
+    private String staticContentDir=".";
+    private String basePath="/";
+    private String password="password";
+    private String blogTitle="blogTitle";
+    private String trackingScript="";
+    private String linkFacebook="#";
+    private String linkTwitter="#";
+    private String linkGitHub="#";
 
     public String getPassword() {
         return password;
@@ -51,5 +55,37 @@ public class GSConfiguration extends Configuration {
 
     public void setBlogTitle(String blogTitle) {
         this.blogTitle = blogTitle;
+    }
+
+    public String getTrackingScript() {
+        return trackingScript;
+    }
+
+    public void setTrackingScript(String trackingScript) {
+        this.trackingScript = trackingScript;
+    }
+
+    public String getLinkFacebook() {
+        return linkFacebook;
+    }
+
+    public void setLinkFacebook(String linkFacebook) {
+        this.linkFacebook = linkFacebook;
+    }
+
+    public String getLinkTwitter() {
+        return linkTwitter;
+    }
+
+    public void setLinkTwitter(String linkTwitter) {
+        this.linkTwitter = linkTwitter;
+    }
+
+    public String getLinkGitHub() {
+        return linkGitHub;
+    }
+
+    public void setLinkGitHub(String linkGitHub) {
+        this.linkGitHub = linkGitHub;
     }
 }

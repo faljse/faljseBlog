@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="${basePath}assets/jsOnlyLightbox/css/lightbox.css">
     <link rel="stylesheet" href="${basePath}assets/clean-blog.css">
     <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
-    <script src="${basePath}assets/jsOnlyLightbox/js/lightbox.js"></script>
 
     <!-- Custom Fonts -->
     <link href="${basePath}assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">

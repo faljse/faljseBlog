@@ -32,11 +32,6 @@
             <#list entries as entry>
                 <div class="post-preview">
                     <a href="${basePath}api/pub/entry/${entry.id}">
-                        <h2 class="post-title">
-                            ${entry.title}
-                        </h2>
-                        <h3 class="post-subtitle">
-                        </h3>
                         ${toHtml(entry.headerText, entry, "LIGHTBOX")}
                     </a>
                     <p class="post-meta">Posted by <a href="#">me</a> on ${entry.created?number_to_date}</p>
@@ -49,5 +44,6 @@
 </div>
 <!-- Footer -->
 <#include "includes/footer.ftl">
+${trackingScript}
 </body>
 </html>
