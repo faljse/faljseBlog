@@ -5,10 +5,7 @@ import faljseBlog.GSConfiguration;
 import objects.BlogEntry;
 import org.tautua.markdownpapers.HtmlEmitter;
 import org.tautua.markdownpapers.Markdown;
-import org.tautua.markdownpapers.ast.Document;
-import org.tautua.markdownpapers.ast.Image;
-import org.tautua.markdownpapers.ast.Resource;
-import org.tautua.markdownpapers.ast.Visitor;
+import org.tautua.markdownpapers.ast.*;
 import org.tautua.markdownpapers.parser.ParseException;
 import org.tautua.markdownpapers.parser.Parser;
 
@@ -46,6 +43,23 @@ public class ViewTools {
             super(buffer);
             this.e=e;
             this.imgr=imgr;
+        }
+
+        public void visit(Code node) {
+            append("<pre class=\"prettyprint\"><code>");
+            visitChildrenAndAppendSeparator(node, '\n');
+            append("</code></pre>");
+            append('\n');
+        }
+
+        public void visit(CodeSpan node) {
+            append("<code>");
+            escapeAndAppend(node.getText());
+            append("</code>");
+        }
+
+        public void visit(CodeText node) {
+            escapeAndAppend(node.getValue());
         }
 
         @Override
