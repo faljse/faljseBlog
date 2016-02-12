@@ -5,9 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>${blogTitle}</title>
-    <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
-    <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
-    <link rel="stylesheet" href="${basePath}assets/clean-blog.min.css">
+    <link rel="stylesheet" href="${basePath}assets/clean-blog.css">
     <link rel="stylesheet" href="${basePath}assets/bootstrap.min.css">
     <link rel="stylesheet" href="${basePath}assets/app.css">
 
@@ -44,6 +42,8 @@
             <form class="form-inline">
                 <div class="form-group">
                     <input type="text" class="form-control" id="title" value="${(entry.title)!}">
+                    <select class="form-control" id="headerImages">
+                    </select><br/>
                     <label for="title">id: ${(entry.id)!}</label>&nbsp;
                     <input type="checkbox" class="checkbox"  id="published" ${(entry.published)?then("checked","")}>published<br/>
 
@@ -84,7 +84,6 @@
                 tabHeader.className = "active";
                 tabContent.className = "";
                 this.editor.swapDoc(this.docHeaderText);
-
             }
         }
 
@@ -97,6 +96,8 @@
             console.log("onSave"+entry);
             var title=document.getElementById('title');
             var published=document.getElementById('published');
+            var himages=document.getElementById('headerImages');
+            var strImage = himages.options[himages.selectedIndex].text;
             var self=this;
             fetch('${basePath}api/admin/write', {
                 method: 'post',
@@ -111,6 +112,7 @@
                     published: published.checked,
                     text: self.docText.getValue(),
                     headerText: self.docHeaderText.getValue(),
+                    headerImage: strImage,
                 })
             });
         }
@@ -149,10 +151,10 @@
                 credentials: 'same-origin',
                 body: data
             }).then(function(data) {
-                this.loadFileNames(${entry.id});
+                this.loadFileNames(${entry.id},"");
                 console.log('request succeeded with JSON response', data)
             }).catch(function(error) {
-                this.loadFileNames(${entry.id});
+                this.loadFileNames(${entry.id},"");
                 console.log('request failed', error)
             });
 
@@ -178,7 +180,7 @@
         {
             console.log("onSelectImage"+entry);
         }
-        function loadFileNames(postID)
+        function loadFileNames(postID, headerImage)
         {
             fetch('${basePath}api/admin/listImages/'+postID,
                     {credentials: 'same-origin'})
@@ -188,18 +190,32 @@
                 var list = document.createElement('ul');
                 list.className="heroes";
                 var _this=this;
+
+                var himages=document.getElementById('headerImages');
+                var strImage=headerImage;
+                if(himages.selectedIndex>=0)
+                    strImage = himages.options[himages.selectedIndex].text;
+                while(himages.options.length > 0)
+                    himages.remove(0);
                 for(var i = 0; i < json.length; i++) {
+                    var name=json[i];
                     var item = document.createElement('li');
+                    var option = document.createElement('option');
+                    option.value=name;
+                    option.innerHTML=name;
+                    himages.appendChild(option);
                     item.onclick = function (fName) {
                         return function () {
                             _this.editor.replaceSelection('!['+fName+']('+fName+' "titleText")\n');
                         };
-                    }(json[i]);
+                    }(name);
                     item.className="heroes";
-                    item.appendChild(document.createTextNode(json[i]));
+                    item.appendChild(document.createTextNode(name));
                     list.appendChild(item);
                 }
-                var flist=document.getElementById('fileList')
+                if(strImage.length >0)
+                    himages.value=strImage;
+                var flist=document.getElementById('fileList');
                 flist.removeChild(flist.firstChild);
                 flist.appendChild(list);
             }).catch(function(ex) {
@@ -219,6 +235,9 @@
             this.docHeaderText=CodeMirror.Doc("${(entry.headerText?js_string)!}","markdown");
             this.docText=CodeMirror.Doc("${(entry.text?js_string)!}","markdown");
 
+            var himages=document.getElementById('headerImages');
+
+
             this.editor = CodeMirror(document.getElementById("editor"), {
                     value: this.docHeaderText,
                     lineNumbers:true,
@@ -227,8 +246,7 @@
 
             });
             this.editor.setSize("100%","100%");
-
-            this.loadFileNames(${entry.id});
+            this.loadFileNames(${entry.id},"${(entry.headerImage?js_string)!}");
             this.InitDrop();
         }
     </script>

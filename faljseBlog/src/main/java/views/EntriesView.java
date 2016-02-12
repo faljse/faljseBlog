@@ -1,16 +1,7 @@
 package views;
 
-import faljseBlog.FaljseBlogApplication;
-import io.dropwizard.views.View;
 import objects.BlogEntry;
-import org.tautua.markdownpapers.HtmlEmitter;
-import org.tautua.markdownpapers.Markdown;
-import org.tautua.markdownpapers.ast.*;
-import org.tautua.markdownpapers.parser.ParseException;
-import org.tautua.markdownpapers.parser.Parser;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
 
 /**

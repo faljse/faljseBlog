@@ -48,8 +48,6 @@ public class PublicResource {
         size=Tools.sanitizeFileName(size);
         java.nio.file.Path imageDir = Tools.getImageDir(configuration.getFaljseBlogDir(), postID);
 
-
-
         try {
             CacheControl cc = new CacheControl();
             cc.setMaxAge(86400);

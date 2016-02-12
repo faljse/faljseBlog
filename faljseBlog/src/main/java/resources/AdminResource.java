@@ -15,6 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.*;
@@ -66,6 +67,13 @@ public class AdminResource {
     {
         try {
             BufferedImage bi= ImageIO.read(containing.resolve(filename).toFile());
+
+            //http://stackoverflow.com/questions/4386446/problem-using-imageio-write-jpg-file
+            //http://stackoverflow.com/questions/1830063/problem-converting-png-to-jpg-using-java-imageio-write#answer-8418291
+            BufferedImage imageRGB = new BufferedImage(bi.getWidth(),
+                    bi.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics g = imageRGB.getGraphics();
+            g.drawImage(bi, 0, 0, null);
             String formatSrc=filename.substring(filename.lastIndexOf('.')+1);
 
             java.nio.file.Path smallPath=containing.resolve("small");
@@ -78,14 +86,15 @@ public class AdminResource {
             if(Files.notExists(largePath))
                 Files.createDirectory(largePath);
 
-            BufferedImage small=Scalr.resize(bi, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1024);
+            BufferedImage small=Scalr.resize(imageRGB, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1024);
             ImageIO.write(small,formatSrc,smallPath.resolve(filename).toFile());
 
-            BufferedImage medium=Scalr.resize(bi, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1280);
+            BufferedImage medium=Scalr.resize(imageRGB, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1280);
             ImageIO.write(medium,formatSrc,mediumPath.resolve(filename).toFile());
 
-            BufferedImage large=Scalr.resize(bi, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1920);
+            BufferedImage large=Scalr.resize(imageRGB, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH,1920);
             ImageIO.write(large,formatSrc,largePath.resolve(filename).toFile());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -169,21 +178,16 @@ public class AdminResource {
     // save uploaded file to new location
     private void writeToFile(InputStream uploadedInputStream,
                              String uploadedFileLocation) {
-
         try {
-            OutputStream out = new FileOutputStream(new File(
-                    uploadedFileLocation));
             int read = 0;
             byte[] bytes = new byte[1024];
-
-            out = new FileOutputStream(new File(uploadedFileLocation));
+            OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
             while ((read = uploadedInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
             out.flush();
             out.close();
         } catch (IOException e) {
-
             e.printStackTrace();
         }
 
@@ -201,14 +205,10 @@ public class AdminResource {
                 .append(".").append(extension).toString()).getAbsolutePath();
     }
 
-
-
     @POST
     @Path("/reset")
     @Produces("text/html")
     public Response reset(@Auth User user) {
-
-        
         return Response.ok().status(200).entity("OK").build();
     }
 

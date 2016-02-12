@@ -33,14 +33,10 @@ public class DebugResource {
         return new DebugView();
     }
 
-
-
     @POST
     @Path("/reset")
     @Produces("text/html")
     public Response reset() {
-
-
         return Response.ok().status(200).entity("OK").build();
     }
 

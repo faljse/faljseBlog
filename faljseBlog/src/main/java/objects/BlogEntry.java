@@ -24,6 +24,8 @@ public class BlogEntry {
     @JsonProperty
     private String headerText;
     @JsonProperty
+    private String headerImage;
+    @JsonProperty
     private boolean published=false;
     @JsonProperty
     private long created;
@@ -95,5 +97,13 @@ public class BlogEntry {
 
     public void setHeaderText(String headerText) {
         this.headerText = headerText;
+    }
+
+    public String getHeaderImage() {
+        return headerImage;
+    }
+
+    public void setHeaderImage(String headerImage) {
+        this.headerImage = headerImage;
     }
 }
