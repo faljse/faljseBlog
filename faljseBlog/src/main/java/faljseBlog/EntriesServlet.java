@@ -15,13 +15,13 @@ public class EntriesServlet extends HttpServlet{
         resp.setContentType("text/html");
         PrintWriter pw=resp.getWriter();
         String basePath = FaljseBlogApplication.getConfig().getBasePath();
+        String hostName = FaljseBlogApplication.getConfig().getHostName();
 
         if(req.getScheme().equals("http")) {
-            String hostname = req.getServerName();
-            resp.sendRedirect("https://"+hostname+basePath+"api/pub/list");
+            resp.sendRedirect(hostName+basePath+"api/pub/list");
         }
         else
-            resp.sendRedirect(basePath+"api/pub/list");
+            resp.sendRedirect(hostName+basePath+"api/pub/list");
         pw.close();
     }
 }

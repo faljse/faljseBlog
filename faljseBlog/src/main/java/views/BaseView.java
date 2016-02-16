@@ -30,6 +30,10 @@ public class BaseView extends View{
     {
         return FaljseBlogApplication.getConfig().getBasePath();
     }
+    public String getHostName()
+    {
+        return FaljseBlogApplication.getConfig().getHostName();
+    }
     BaseView(String templateName)
     {
         super(templateName);

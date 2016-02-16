@@ -10,6 +10,7 @@ import io.dropwizard.Configuration;
 public class GSConfiguration extends Configuration {
     private String faljseBlogDir;
     private String staticContentDir=".";
+    private String hostName="http://127.0.0.1";
     private String basePath="/";
     private String password="password";
     private String blogTitle="blogTitle";
@@ -17,6 +18,7 @@ public class GSConfiguration extends Configuration {
     private String linkFacebook="#";
     private String linkTwitter="#";
     private String linkGitHub="#";
+
 
     public String getPassword() {
         return password;
@@ -87,5 +89,13 @@ public class GSConfiguration extends Configuration {
 
     public void setLinkGitHub(String linkGitHub) {
         this.linkGitHub = linkGitHub;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

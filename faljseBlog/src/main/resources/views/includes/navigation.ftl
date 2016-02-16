@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${basePath}api/pub/list">${blogTitle}</a>
+            <a class="navbar-brand" href="${hostName}${basePath}api/pub/list">${blogTitle}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
