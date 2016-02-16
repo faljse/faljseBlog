@@ -97,7 +97,9 @@
             var title=document.getElementById('title');
             var published=document.getElementById('published');
             var himages=document.getElementById('headerImages');
-            var strImage = himages.options[himages.selectedIndex].text;
+            var strImage="";
+            if(himages.selectedIndex>=0)
+                strImage = himages.options[himages.selectedIndex].text;
             var self=this;
             fetch('${basePath}api/admin/write', {
                 method: 'post',
